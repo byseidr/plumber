@@ -4,12 +4,13 @@ import { Guard, GuardOptions, GuardResult } from "./types";
 
 export const addSubResults = async (
     options: GuardOptions,
+    data: any,
+    payload: { [key: string]: any },
     result: GuardResult,
-    message: string[],
-    data: any
+    message: string[]
 ): Promise<void> => {
     for (let guard of $$.getKeyArr(options, "guards")) {
-        const subResult = await guard(data);
+        const subResult = await guard(data, payload);
         addSubStatus(options, result, subResult);
         addSubMessage(options, message, subResult);
     }
@@ -39,12 +40,13 @@ export const addSubStatus = (
 export const getSubResult = async (
     options: GuardOptions,
     data: any,
+    payload: { [key: string]: any },
     index: number = 0,
     defaultVal: GuardResult = { status: true }
 ) => {
     return $$.hasKey(options, "guards") &&
         $$.hasKey(options.guards!, <string>(<any>index))
-        ? await (<Guard>options.guards![index])(data)
+        ? await (<Guard>options.guards![index])(data, payload)
         : defaultVal;
 };
 

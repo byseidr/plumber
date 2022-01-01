@@ -1,9 +1,13 @@
 export type ExtGuard = (
     options: GuardOptions,
-    data: any
+    data: any,
+    payload: { [key: string]: any }
 ) => Promise<GuardResult>;
 
-export type Guard = (data: any) => Promise<GuardResult>;
+export type Guard = (
+    data: any,
+    payload: { [key: string]: any }
+) => Promise<GuardResult>;
 
 export type GuardOptions = {
     guards?: (Guard | ExtGuard)[];
