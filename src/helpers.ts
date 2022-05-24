@@ -52,7 +52,6 @@ export const getSubResult = async (
 
 export const hasMessage = (guardResult: GuardResult): boolean => {
     return (
-        !$$.getKeyBool(guardResult, "status") &&
         ($$.hasKeyStr(guardResult, "message") ||
             $$.hasKeyArr(guardResult, "message")) &&
         !$$.isEmpty(guardResult.message)
