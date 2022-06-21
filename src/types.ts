@@ -1,22 +1,18 @@
-export type ExtGuard = (
-    options: GuardOptions,
-    data: any,
-    payload: { [key: string]: any }
-) => Promise<GuardResult>;
+export type ExtPipe = (
+    options: PipeOptions,
+    stream: { [key: string]: any }
+) => Promise<PipeResult>;
 
-export type Guard = (
-    data: any,
-    payload: { [key: string]: any }
-) => Promise<GuardResult>;
+export type Pipe = (stream: { [key: string]: any }) => Promise<PipeResult>;
 
-export type GuardOptions = {
-    guards?: (Guard | ExtGuard)[];
+export type PipeOptions = {
+    pipes?: (Pipe | ExtPipe)[];
     initialStatus?: boolean;
     message?: string;
     reducer?: (acc: boolean, curr: boolean) => boolean;
 };
 
-export type GuardResult = {
+export type PipeResult = {
     status?: boolean;
     message?: string | string[];
 };

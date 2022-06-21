@@ -1,25 +1,24 @@
 import * as $$ from "richierich";
 
-import { Guard, GuardOptions, GuardResult } from "./types";
+import { Pipe, PipeOptions, PipeResult } from "./types";
 
 export const addSubResults = async (
-    options: GuardOptions,
-    data: any,
-    payload: { [key: string]: any },
-    result: GuardResult,
+    options: PipeOptions,
+    stream: { [key: string]: any },
+    result: PipeResult,
     message: string[]
 ): Promise<void> => {
-    for (let guard of $$.getKeyArr(options, "guards")) {
-        const subResult = await guard(data, payload);
+    for (let pipe of $$.getKeyArr(options, "pipes")) {
+        const subResult = await pipe(stream);
         addSubStatus(options, result, subResult);
         addSubMessage(options, message, subResult);
     }
 };
 
 export const addSubMessage = (
-    options: GuardOptions,
+    options: PipeOptions,
     message: string[],
-    subResult: GuardResult
+    subResult: PipeResult
 ): void => {
     if (!$$.hasKey(options, "message") && hasMessage(subResult)) {
         message.push(...$$.toArr(subResult.message));
@@ -27,9 +26,9 @@ export const addSubMessage = (
 };
 
 export const addSubStatus = (
-    options: GuardOptions,
-    result: GuardResult,
-    subResult: GuardResult
+    options: PipeOptions,
+    result: PipeResult,
+    subResult: PipeResult
 ): void => {
     result.status = options.reducer!(
         $$.getKeyBool(result, "status"),
@@ -38,22 +37,21 @@ export const addSubStatus = (
 };
 
 export const getSubResult = async (
-    options: GuardOptions,
-    data: any,
-    payload: { [key: string]: any },
+    options: PipeOptions,
+    stream: { [key: string]: any },
     index: number = 0,
-    defaultVal: GuardResult = { status: true }
+    defaultVal: PipeResult = { status: true }
 ) => {
-    return $$.hasKey(options, "guards") &&
-        $$.hasKey(options.guards!, <string>(<any>index))
-        ? await (<Guard>options.guards![index])(data, payload)
+    return $$.hasKey(options, "pipes") &&
+        $$.hasKey(options.pipes!, <string>(<any>index))
+        ? await (<Pipe>options.pipes![index])(stream)
         : defaultVal;
 };
 
-export const hasMessage = (guardResult: GuardResult): boolean => {
+export const hasMessage = (pipeResult: PipeResult): boolean => {
     return (
-        ($$.hasKeyStr(guardResult, "message") ||
-            $$.hasKeyArr(guardResult, "message")) &&
-        !$$.isEmpty(guardResult.message)
+        ($$.hasKeyStr(pipeResult, "message") ||
+            $$.hasKeyArr(pipeResult, "message")) &&
+        !$$.isEmpty(pipeResult.message)
     );
 };

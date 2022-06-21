@@ -1,15 +1,16 @@
 {
-    "name": "guardio",
-    "version": "2.0.0",
-    "description": "A set of methods related to guarding JavaScript code.",
+    "name": "plumbio",
+    "version": "1.0.0",
+    "description": "Logic plumbing functions for your JavaScript data.",
     "main": "dist/index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [
-        "guard",
-        "guards",
-        "guarding"
+        "functions",
+        "data",
+        "logic",
+        "plumbing"
     ],
     "author": "Seidr",
     "license": "MIT",
