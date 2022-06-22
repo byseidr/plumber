@@ -10,7 +10,7 @@ export type PipeOptions = {
     initialStatus?: boolean;
     message?: string;
     reducer?: (acc: boolean, curr: boolean) => boolean;
-    messageFilter?: (result: PipeResult, subResult: PipeResult) => boolean;
+    messageFilter?: PipeSubResultFilter;
 };
 
 export type PipeResult = {
