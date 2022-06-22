@@ -7,6 +7,8 @@ import { ExtPipe, Pipe, PipeResult } from "./types";
 export const and: ExtPipe = async (options, stream = {}) => {
     options.initialStatus = true;
     options.reducer = (acc, curr) => acc && curr;
+    options.messageFilter = (result, subResult) =>
+        result?.status === subResult?.status;
     const result = await compare(options, stream);
     return result;
 };
@@ -51,6 +53,8 @@ export const not: ExtPipe = async (options, stream = {}) => {
 export const or: ExtPipe = async (options, stream = {}) => {
     options.initialStatus = false;
     options.reducer = (acc, curr) => acc || curr;
+    options.messageFilter = (result, subResult) =>
+        result?.status === subResult?.status;
     const result: PipeResult = await compare(options, stream);
     return result;
 };
