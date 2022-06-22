@@ -63,10 +63,9 @@ export const getSubResult = async (
         : defaultVal;
 };
 
-export const hasMessage = (pipeResult: PipeResult): boolean => {
-    return (
-        ($$.hasKeyStr(pipeResult, "message") ||
-            $$.hasKeyArr(pipeResult, "message")) &&
-        !$$.isEmpty(pipeResult.message)
-    );
+export const hasMessage = (result: PipeResult): boolean => {
+    const hasMessage =
+        $$.hasKeyStr(result, "message") || $$.hasKeyArr(result, "message");
+    const isNotEmpty = !$$.isEmpty(result.message);
+    return hasMessage && isNotEmpty;
 };
