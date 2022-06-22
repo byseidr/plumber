@@ -8,9 +8,13 @@ export const addSubResults = async (
     result: PipeResult,
     message: string[]
 ): Promise<void> => {
+    const subResults: PipeResult[] = [];
     for (let pipe of $$.getKeyArr(options, "pipes")) {
         const subResult = await pipe(stream);
         addSubStatus(options, result, subResult);
+        subResults.push(subResult);
+    }
+    for (let subResult of subResults) {
         addSubMessage(options, message, subResult);
     }
 };
