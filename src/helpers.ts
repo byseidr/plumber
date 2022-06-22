@@ -15,16 +15,21 @@ export const addSubResults = async (
         subResults.push(subResult);
     }
     for (let subResult of subResults) {
-        addSubMessage(options, message, subResult);
+        addSubMessage(options, message, result, subResult);
     }
 };
 
 export const addSubMessage = (
     options: PipeOptions,
     message: string[],
+    result: PipeResult,
     subResult: PipeResult
 ): void => {
-    if (!$$.hasKey(options, "message") && hasMessage(subResult)) {
+    if (
+        !$$.hasKey(options, "message") &&
+        hasMessage(subResult) &&
+        filterSubResult(options?.messageFilter, result, subResult)
+    ) {
         message.push(...$$.toArr(subResult.message));
     }
 };
