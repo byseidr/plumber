@@ -1,6 +1,6 @@
 import * as $$ from "richierich";
 
-import { Pipe, PipeOptions, PipeResult } from "./types";
+import { Pipe, PipeOptions, PipeResult, PipeSubResultFilter } from "./types";
 
 export const addSubResults = async (
     options: PipeOptions,
@@ -35,6 +35,12 @@ export const addSubStatus = (
         $$.getKeyBool(subResult, "status")
     );
 };
+
+export const filterSubResult = (
+    filter: PipeSubResultFilter | undefined,
+    result: PipeResult,
+    subResult: PipeResult
+) => filter?.(result, subResult) ?? true;
 
 export const getSubResult = async (
     options: PipeOptions,
