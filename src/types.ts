@@ -17,3 +17,8 @@ export type PipeResult = {
     status?: boolean;
     message?: string | string[];
 };
+
+export type PipeSubResultFilter = (
+    result: PipeResult,
+    subResult: PipeResult
+) => boolean;
