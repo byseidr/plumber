@@ -8,14 +8,14 @@ export type Pipe = (stream: { [key: string]: any }) => Promise<PipeResult>;
 export type PipeOptions = {
     pipes?: (Pipe | ExtPipe)[];
     initialStatus?: boolean;
-    message?: string;
+    response?: string;
     reducer?: (acc: boolean, curr: boolean) => boolean;
-    messageFilter?: PipeSubResultFilter;
+    responseFilter?: PipeSubResultFilter;
 };
 
 export type PipeResult = {
     status?: boolean;
-    message?: string | string[];
+    response?: string | string[];
 };
 
 export type PipeSubResultFilter = (

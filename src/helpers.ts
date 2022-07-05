@@ -6,7 +6,7 @@ export const addSubResults = async (
     options: PipeOptions,
     stream: { [key: string]: any },
     result: PipeResult,
-    message: string[]
+    response: string[]
 ): Promise<void> => {
     const subResults: PipeResult[] = [];
     for (let pipe of $$.getKeyArr(options, "pipes")) {
@@ -15,22 +15,22 @@ export const addSubResults = async (
         subResults.push(subResult);
     }
     for (let subResult of subResults) {
-        addSubMessage(options, message, result, subResult);
+        addSubResponse(options, response, result, subResult);
     }
 };
 
-export const addSubMessage = (
+export const addSubResponse = (
     options: PipeOptions,
-    message: string[],
+    response: string[],
     result: PipeResult,
     subResult: PipeResult
 ): void => {
     if (
-        !$$.hasKey(options, "message") &&
-        hasMessage(subResult) &&
-        filterSubResult(options?.messageFilter, result, subResult)
+        !$$.hasKey(options, "response") &&
+        hasResponse(subResult) &&
+        filterSubResult(options?.responseFilter, result, subResult)
     ) {
-        message.push(...$$.toArr(subResult.message));
+        response.push(...$$.toArr(subResult.response));
     }
 };
 
@@ -63,9 +63,9 @@ export const getSubResult = async (
         : defaultVal;
 };
 
-export const hasMessage = (result: PipeResult): boolean => {
-    const hasMessage =
-        $$.hasKeyStr(result, "message") || $$.hasKeyArr(result, "message");
-    const isNotEmpty = !$$.isEmpty(result.message);
-    return hasMessage && isNotEmpty;
+export const hasResponse = (result: PipeResult): boolean => {
+    const hasResponse =
+        $$.hasKeyStr(result, "response") || $$.hasKeyArr(result, "response");
+    const isNotEmpty = !$$.isEmpty(result.response);
+    return hasResponse && isNotEmpty;
 };

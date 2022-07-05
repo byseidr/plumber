@@ -7,7 +7,7 @@ import { ExtPipe, Pipe, PipeResult } from "./types";
 export const and: ExtPipe = async (options, stream = {}) => {
     options.initialStatus = true;
     options.reducer = (acc, curr) => acc && curr;
-    options.messageFilter = (result, subResult) =>
+    options.responseFilter = (result, subResult) =>
         result?.status === subResult?.status;
     const result = await compare(options, stream);
     return result;
@@ -23,11 +23,11 @@ export const append: ExtPipe = async (options, stream = {}) => {
 export const compare: ExtPipe = async (options, stream = {}) => {
     const result: PipeResult = {};
     result.status = $$.getKeyBool(options, "initialStatus");
-    const message = $$.getKey(options, "message", []);
+    const response = $$.getKey(options, "response", []);
     if ($$.hasKeyFunc(options, "reducer")) {
-        await helpers.addSubResults(options, stream, result, message);
+        await helpers.addSubResults(options, stream, result, response);
     }
-    if (!$$.isEmpty(message)) result.message = message;
+    if (!$$.isEmpty(response)) result.response = response;
     return result;
 };
 
@@ -45,15 +45,15 @@ export const ifElse: ExtPipe = async (options, stream = {}) => {
 export const not: ExtPipe = async (options, stream = {}) => {
     const result: PipeResult = await helpers.getSubResult(options, stream);
     result.status = !result.status;
-    if ($$.hasKey(options, "message")) result.message = options.message;
-    else if (helpers.hasMessage(result)) result.message = result.message;
+    if ($$.hasKey(options, "response")) result.response = options.response;
+    else if (helpers.hasResponse(result)) result.response = result.response;
     return result;
 };
 
 export const or: ExtPipe = async (options, stream = {}) => {
     options.initialStatus = false;
     options.reducer = (acc, curr) => acc || curr;
-    options.messageFilter = (result, subResult) =>
+    options.responseFilter = (result, subResult) =>
         result?.status === subResult?.status;
     const result: PipeResult = await compare(options, stream);
     return result;
