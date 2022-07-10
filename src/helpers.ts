@@ -55,7 +55,7 @@ export const getSubResult = async (
     options: PipeOptions,
     stream: { [key: string]: any },
     index: number = 0,
-    defaultVal: PipeResult = { status: true }
+    defaultVal: PipeResult = { status: false }
 ) => {
     return $$.hasKey(options, "pipes") &&
         $$.hasKey(options.pipes!, <string>(<any>index))
