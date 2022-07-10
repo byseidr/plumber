@@ -6,12 +6,15 @@ export type ExtPipe = (
 export type Pipe = (stream: { [key: string]: any }) => Promise<PipeResult>;
 
 export type PipeOptions = {
+    exp?: any;
+    expression?: any;
     pipe?: Pipe | ExtPipe;
     pipes?: (Pipe | ExtPipe)[];
     initialStatus?: boolean;
     response?: string;
     reducer?: (acc: boolean, curr: boolean) => boolean;
     responseFilter?: PipeSubResultFilter;
+    value?: any;
 };
 
 export type PipeResult = {
