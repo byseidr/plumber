@@ -57,11 +57,16 @@ export const getSubResult = async (
     index: number = 0,
     defaultVal: PipeResult = { status: false }
 ) => {
-    return $$.hasKey(options, "pipes") &&
+    let result = defaultVal;
+    if ($$.hasKey(options, "pipe") && $$.isFunc(options.pipe!))
+        result = await (<Pipe>options.pipe!)(stream);
+    else if (
+        $$.hasKey(options, "pipes") &&
         $$.isFuncArr(options.pipes!) &&
         options.pipes!.length === index + 1
-        ? await (<Pipe>options.pipes![index])(stream)
-        : defaultVal;
+    )
+        result = await (<Pipe>options.pipes![index])(stream);
+    return result;
 };
 
 export const hasResponse = (result: PipeResult): boolean => {
