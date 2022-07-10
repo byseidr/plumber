@@ -87,6 +87,17 @@ export const switchCase: ExtPipe = async (options, stream = {}) => {
     return result;
 };
 
+export const switchCaseBreak: ExtPipe = async (options, stream = {}) => {
+    let result: PipeResult = {};
+    result.status = true;
+    if (stream.switchExp === options.value || stream.switchMatched) {
+        result = await helpers.getSubResult(options, stream);
+        stream.switchMatched = true;
+        await switchBreak(stream);
+    }
+    return result;
+};
+
 export const switchDefault: ExtPipe = async (options, stream = {}) => {
     let result: PipeResult = {};
     result.status = true;
