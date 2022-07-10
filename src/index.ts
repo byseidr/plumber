@@ -67,6 +67,42 @@ export const returnTrue: Pipe = async (stream = {}) => ({
     status: true,
 });
 
+export const switchBreak: Pipe = async (stream = {}) => {
+    let result: PipeResult = {};
+    result.status = true;
+    if (stream.switchExp && stream.switchMatched) {
+        stream.switchExp = undefined;
+        stream.switchMatched = undefined;
+    }
+    return result;
+};
+
+export const switchCase: ExtPipe = async (options, stream = {}) => {
+    let result: PipeResult = {};
+    result.status = true;
+    if (stream.switchExp === options.value || stream.switchMatched) {
+        result = await helpers.getSubResult(options, stream);
+        stream.switchMatched = true;
+    }
+    return result;
+};
+
+export const switchDefault: ExtPipe = async (options, stream = {}) => {
+    let result: PipeResult = {};
+    result.status = true;
+    if (stream.switchExp && !stream.switchMatched) {
+        result = await helpers.getSubResult(options, stream);
+    }
+    return result;
+};
+
+export const switchExp: ExtPipe = async (options, stream = {}) => {
+    let result: PipeResult = {};
+    stream.switchExp = options.exp || options.expression;
+    result.status = !!stream.switchExp;
+    return result;
+};
+
 export const then: ExtPipe = async (options, stream = {}) => {
     let result: PipeResult = {};
     result.status = true;
