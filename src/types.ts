@@ -1,15 +1,25 @@
 export type ExtPipe = (
-    options: PipeOptions,
-    stream: { [key: string]: any }
+    options: PipeGeneral | PipeOptions,
+    stream: { [key: string]: any },
+    pipeList?: PipeList
 ) => Promise<PipeResult>;
 
 export type Pipe = (stream: { [key: string]: any }) => Promise<PipeResult>;
 
+export type PipeGeneral =
+    | Pipe
+    | ExtPipe
+    | (Pipe | ExtPipe)[]
+    | string
+    | string[];
+
+export type PipeList = { [key: string]: Pipe | ExtPipe };
+
 export type PipeOptions = {
     exp?: any;
     expression?: any;
-    pipe?: Pipe | ExtPipe;
-    pipes?: (Pipe | ExtPipe)[];
+    pipe?: PipeGeneral;
+    pipes?: PipeGeneral;
     initialStatus?: boolean;
     response?: string;
     reducer?: (acc: boolean, curr: boolean) => boolean;

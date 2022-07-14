@@ -2,60 +2,97 @@ import * as $$ from "richierich";
 
 import * as helpers from "./helpers";
 
-import { ExtPipe, Pipe, PipeResult } from "./types";
+import { ExtPipe, Pipe, PipeList, PipeOptions, PipeResult } from "./types";
 
-export const and: ExtPipe = async (options, stream = {}) => {
-    options.initialStatus = true;
-    options.reducer = (acc, curr) => acc && curr;
-    options.responseFilter = (result, subResult) =>
+export const and: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    (<PipeOptions>options).initialStatus = true;
+    (<PipeOptions>options).reducer = (acc, curr) => acc && curr;
+    (<PipeOptions>options).responseFilter = (result, subResult) =>
         result?.status === subResult?.status;
-    const result = await compare(options, stream);
+    const result = await compare(options, stream, pipeList);
     return result;
 };
 
-export const append: ExtPipe = async (options, stream = {}) => {
-    let result = await helpers.getSubResult(options, stream);
-    let appendResult = $$.omit(options, "pipes");
+export const append: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    options = helpers.getFormattedOptions(options, pipeList);
+    let result = await helpers.getSubResult(<PipeOptions>options, stream);
+    let appendResult = $$.omit(<PipeOptions>options, "pipes");
     result = { ...result, ...appendResult };
     return result;
 };
 
-export const compare: ExtPipe = async (options, stream = {}) => {
+export const compare: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    options = helpers.getFormattedOptions(options, pipeList);
     const result: PipeResult = {};
-    result.status = $$.getKeyBool(options, "initialStatus");
-    const response = $$.getKey(options, "response", []);
-    if ($$.hasKeyFunc(options, "reducer")) {
-        await helpers.addSubResults(options, stream, result, response);
+    result.status = $$.getKeyBool(<PipeOptions>options, "initialStatus");
+    const response = $$.getKey(<PipeOptions>options, "response", []);
+    if ($$.hasKeyFunc(<PipeOptions>options, "reducer")) {
+        await helpers.addSubResults(
+            <PipeOptions>options,
+            stream,
+            result,
+            response
+        );
     }
     if (!$$.isEmpty(response)) result.response = response;
     return result;
 };
 
-export const ifElse: ExtPipe = async (options, stream = {}) => {
+export const ifElse: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    options = helpers.getFormattedOptions(options, pipeList);
     const conditionResult: PipeResult = await helpers.getSubResult(
-        options,
+        <PipeOptions>options,
         stream
     );
     const result: PipeResult = conditionResult.status
-        ? await helpers.getSubResult(options, stream, 1)
-        : await helpers.getSubResult(options, stream, 2);
+        ? await helpers.getSubResult(<PipeOptions>options, stream, 1)
+        : await helpers.getSubResult(<PipeOptions>options, stream, 2);
     return result;
 };
 
-export const not: ExtPipe = async (options, stream = {}) => {
-    const result: PipeResult = await helpers.getSubResult(options, stream);
+export const not: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    options = helpers.getFormattedOptions(options, pipeList);
+    const result: PipeResult = await helpers.getSubResult(
+        <PipeOptions>options,
+        stream
+    );
     result.status = !result.status;
-    if ($$.hasKey(options, "response")) result.response = options.response;
+    if ($$.hasKey(<PipeOptions>options, "response"))
+        result.response = (<PipeOptions>options).response;
     else if (helpers.hasResponse(result)) result.response = result.response;
     return result;
 };
 
-export const or: ExtPipe = async (options, stream = {}) => {
-    options.initialStatus = false;
-    options.reducer = (acc, curr) => acc || curr;
-    options.responseFilter = (result, subResult) =>
+export const or: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    (<PipeOptions>options).initialStatus = false;
+    (<PipeOptions>options).reducer = (acc, curr) => acc || curr;
+    (<PipeOptions>options).responseFilter = (result, subResult) =>
         result?.status === subResult?.status;
-    const result: PipeResult = await compare(options, stream);
+    const result: PipeResult = await compare(options, stream, pipeList);
     return result;
 };
 
@@ -77,47 +114,74 @@ export const switchBreak: Pipe = async (stream = {}) => {
     return result;
 };
 
-export const switchCase: ExtPipe = async (options, stream = {}) => {
+export const switchCase: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    options = helpers.getFormattedOptions(options, pipeList);
     let result: PipeResult = {};
     result.status = true;
-    if (stream.switchExp === options.value || stream.switchMatched) {
-        result = await helpers.getSubResult(options, stream);
+    if (
+        stream.switchExp === (<PipeOptions>options).value ||
+        stream.switchMatched
+    ) {
+        result = await helpers.getSubResult(<PipeOptions>options, stream);
         stream.switchMatched = true;
     }
     return result;
 };
 
-export const switchCaseBreak: ExtPipe = async (options, stream = {}) => {
+export const switchCaseBreak: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    options = helpers.getFormattedOptions(options, pipeList);
     let result: PipeResult = {};
     result.status = true;
-    if (stream.switchExp === options.value || stream.switchMatched) {
-        result = await helpers.getSubResult(options, stream);
+    if (
+        stream.switchExp === (<PipeOptions>options).value ||
+        stream.switchMatched
+    ) {
+        result = await helpers.getSubResult(<PipeOptions>options, stream);
         stream.switchMatched = true;
         await switchBreak(stream);
     }
     return result;
 };
 
-export const switchDefault: ExtPipe = async (options, stream = {}) => {
+export const switchDefault: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    options = helpers.getFormattedOptions(options, pipeList);
     let result: PipeResult = {};
     result.status = true;
     if (stream.switchExp && !stream.switchMatched) {
-        result = await helpers.getSubResult(options, stream);
+        result = await helpers.getSubResult(<PipeOptions>options, stream);
     }
     return result;
 };
 
 export const switchExp: ExtPipe = async (options, stream = {}) => {
     let result: PipeResult = {};
-    stream.switchExp = options.exp || options.expression;
+    stream.switchExp =
+        (<PipeOptions>options).exp || (<PipeOptions>options).expression;
     result.status = !!stream.switchExp;
     return result;
 };
 
-export const then: ExtPipe = async (options, stream = {}) => {
+export const then: ExtPipe = async (
+    options,
+    stream = {},
+    pipeList?: PipeList
+) => {
+    options = helpers.getFormattedOptions(options, pipeList);
     let result: PipeResult = {};
     result.status = true;
-    for (let pipe of $$.getKeyArr(options, "pipes")) {
+    for (let pipe of $$.getKeyArr(<PipeOptions>options, "pipes")) {
         if ($$.getKey(result, "status", true)) result = await pipe(stream);
     }
     return result;

@@ -1,6 +1,14 @@
 import * as $$ from "richierich";
 
-import { Pipe, PipeOptions, PipeResult, PipeSubResultFilter } from "./types";
+import {
+    ExtPipe,
+    Pipe,
+    PipeGeneral,
+    PipeList,
+    PipeOptions,
+    PipeResult,
+    PipeSubResultFilter,
+} from "./types";
 
 export const addSubResults = async (
     options: PipeOptions,
@@ -45,6 +53,53 @@ export const addSubStatus = (
     );
 };
 
+export const getFormattedOptions = (
+    options: PipeGeneral | PipeOptions,
+    pipeList?: PipeList
+) => {
+    if (!$$.isObj(options))
+        options = {
+            pipes: <PipeGeneral>options,
+        };
+    options = getMergedPipes(options);
+    options = getFormattedPipes(options, pipeList);
+    return options;
+};
+
+export const getFormattedPipes = (
+    options: PipeGeneral | PipeOptions,
+    pipeList?: PipeList
+) => {
+    if ((<PipeOptions>options).pipes) {
+        const pipes = $$.toArr((<PipeOptions>options).pipes);
+        options = {
+            ...(<PipeOptions>options),
+            pipes: pipes.map((pipe) => getFormattedPipe(pipe, pipeList)),
+        };
+    }
+    return options;
+};
+
+export const getMergedPipes = (options: PipeGeneral | PipeOptions) => {
+    if ((<PipeOptions>options).pipe) {
+        const pipe = $$.toArr((<PipeOptions>options).pipe);
+        const pipes = $$.toArr((<PipeOptions>options).pipes);
+        options = {
+            ...$$.omit(<PipeOptions>options, "pipe"),
+            pipes: [...pipe, ...pipes].filter(Boolean),
+        };
+    }
+    return options;
+};
+
+export const getFormattedPipe = (
+    pipe: Pipe | ExtPipe | string,
+    pipeList?: PipeList
+) =>
+    $$.isStr(pipe) && pipeList && pipeList[<string>pipe]
+        ? pipeList[<string>pipe]
+        : <Pipe | ExtPipe>pipe;
+
 export const filterSubResult = (
     filter: PipeSubResultFilter | undefined,
     result: PipeResult,
@@ -58,14 +113,12 @@ export const getSubResult = async (
     defaultVal: PipeResult = { status: false }
 ) => {
     let result = defaultVal;
-    if ($$.hasKey(options, "pipe") && $$.isFunc(options.pipe!))
-        result = await (<Pipe>options.pipe!)(stream);
-    else if (
+    if (
         $$.hasKey(options, "pipes") &&
         $$.isFuncArr(options.pipes!) &&
         options.pipes!.length === index + 1
     )
-        result = await (<Pipe>options.pipes![index])(stream);
+        result = await (<Pipe[]>options.pipes!)[index](stream);
     return result;
 };
 
