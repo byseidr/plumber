@@ -106,7 +106,7 @@ export const returnTrue: Pipe = async (stream = {}) => ({
     status: true,
 });
 
-export const setStore = (store: PipeStore) => {
+export const setStore = (store?: PipeStore) => {
     globalStore = store ? { ...exports, ...store } : { ...exports };
 };
 
