@@ -11,7 +11,8 @@ export type PipeGeneral =
     | ExtPipe
     | (Pipe | ExtPipe)[]
     | string
-    | string[];
+    | string[]
+    | string[][];
 
 export type PipeList = { [key: string]: Pipe | ExtPipe };
 

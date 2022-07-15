@@ -72,7 +72,7 @@ export const getFormattedPipes = (
 ) => {
     if ((<PipeOptions>options).pipes) {
         const pipes = $$.toArr((<PipeOptions>options).pipes);
-        options = {
+        options = <PipeOptions>{
             ...(<PipeOptions>options),
             pipes: pipes.map((pipe) => getFormattedPipe(pipe, pipeList)),
         };
@@ -93,12 +93,22 @@ export const getMergedPipes = (options: PipeGeneral | PipeOptions) => {
 };
 
 export const getFormattedPipe = (
-    pipe: Pipe | ExtPipe | string,
+    pipe: Exclude<PipeGeneral, string[][]>,
     pipeList?: PipeList
-) =>
-    $$.isStr(pipe) && pipeList && pipeList[<string>pipe]
-        ? pipeList[<string>pipe]
-        : <Pipe | ExtPipe>pipe;
+) => {
+    pipe = $$.toArr(pipe);
+    if ($$.isStr(pipe[0])) pipe[0] = pipeList?.[<string>pipe[0]] ?? pipe[0];
+    if (pipe.length > 1) pipe = getPipeBounds(pipe);
+    else pipe = pipe[0];
+    return pipe;
+};
+
+export const getPipeBounds = (pipe: string[] | (Pipe | ExtPipe)[]) => {
+    let boundPipe: Pipe | ExtPipe | null = null;
+    if ($$.isFunc(pipe?.[0]))
+        boundPipe = (<ExtPipe>pipe[0]).bind(null, pipe[1]);
+    return boundPipe ?? pipe;
+};
 
 export const filterSubResult = (
     filter: PipeSubResultFilter | undefined,
