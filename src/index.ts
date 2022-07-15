@@ -107,7 +107,7 @@ export const returnTrue: Pipe = async (stream = {}) => ({
 });
 
 export const setStore = (store: PipeStore) => {
-    globalStore = { ...exports, ...store };
+    globalStore = store ? { ...exports, ...store } : { ...exports };
 };
 
 export const switchBreak: Pipe = async (stream = {}) => {
