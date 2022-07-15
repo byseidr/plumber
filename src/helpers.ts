@@ -4,9 +4,9 @@ import {
     ExtPipe,
     Pipe,
     PipeGeneral,
-    PipeList,
     PipeOptions,
     PipeResult,
+    PipeStore,
     PipeSubResultFilter,
 } from "./types";
 
@@ -55,26 +55,26 @@ export const addSubStatus = (
 
 export const getFormattedOptions = (
     options: PipeGeneral | PipeOptions,
-    pipeList?: PipeList
+    pipeStore?: PipeStore
 ) => {
     if (!$$.isObj(options))
         options = {
             pipes: <PipeGeneral>options,
         };
     options = getMergedPipes(options);
-    options = getFormattedPipes(options, pipeList);
+    options = getFormattedPipes(options, pipeStore);
     return options;
 };
 
 export const getFormattedPipes = (
     options: PipeGeneral | PipeOptions,
-    pipeList?: PipeList
+    pipeStore?: PipeStore
 ) => {
     if ((<PipeOptions>options).pipes) {
         const pipes = $$.toArr((<PipeOptions>options).pipes);
         options = <PipeOptions>{
             ...(<PipeOptions>options),
-            pipes: pipes.map((pipe) => getFormattedPipe(pipe, pipeList)),
+            pipes: pipes.map((pipe) => getFormattedPipe(pipe, pipeStore)),
         };
     }
     return options;
@@ -94,10 +94,10 @@ export const getMergedPipes = (options: PipeGeneral | PipeOptions) => {
 
 export const getFormattedPipe = (
     pipe: Exclude<PipeGeneral, string[][]>,
-    pipeList?: PipeList
+    pipeStore?: PipeStore
 ) => {
     pipe = $$.toArr(pipe);
-    if ($$.isStr(pipe[0])) pipe[0] = pipeList?.[<string>pipe[0]] ?? pipe[0];
+    if ($$.isStr(pipe[0])) pipe[0] = pipeStore?.[<string>pipe[0]] ?? pipe[0];
     if (pipe.length > 1) pipe = getPipeBounds(pipe);
     else pipe = pipe[0];
     return pipe;

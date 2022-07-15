@@ -1,7 +1,7 @@
 export type ExtPipe = (
     options: PipeGeneral | PipeOptions,
     stream: { [key: string]: any },
-    pipeList?: PipeList
+    localStore?: PipeStore
 ) => Promise<PipeResult>;
 
 export type Pipe = (stream: { [key: string]: any }) => Promise<PipeResult>;
@@ -13,8 +13,6 @@ export type PipeGeneral =
     | string
     | string[]
     | string[][];
-
-export type PipeList = { [key: string]: Pipe | ExtPipe };
 
 export type PipeOptions = {
     exp?: any;
@@ -32,6 +30,8 @@ export type PipeResult = {
     status?: boolean;
     response?: string | string[];
 };
+
+export type PipeStore = { [key: string]: Pipe | ExtPipe };
 
 export type PipeSubResultFilter = (
     result: PipeResult,
