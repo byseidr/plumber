@@ -126,7 +126,7 @@ export const getSubResult = async (
     if (
         $$.hasKey(options, "pipes") &&
         $$.isFuncArr(options.pipes!) &&
-        options.pipes!.length === index + 1
+        options.pipes!.length >= index + 1
     )
         result = await (<Pipe[]>options.pipes!)[index](stream);
     return result;
