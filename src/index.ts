@@ -24,7 +24,7 @@ export const append: ExtPipe = async (
     stream = {},
     localStore: PipeStore = globalStore
 ) => {
-    options = helpers.getFormattedOptions(options, localStore);
+    options = helpers.getFormattedOptions(options, stream, localStore);
     let result = await helpers.getSubResult(<PipeOptions>options, stream);
     let appendResult = $$.omit(<PipeOptions>options, "pipes");
     result = { ...result, ...appendResult };
@@ -36,7 +36,7 @@ export const compare: ExtPipe = async (
     stream = {},
     localStore: PipeStore = globalStore
 ) => {
-    options = helpers.getFormattedOptions(options, localStore);
+    options = helpers.getFormattedOptions(options, stream, localStore);
     const result: PipeResult = {};
     result.status = $$.getKeyBool(<PipeOptions>options, "initialStatus");
     const response = $$.getKey(<PipeOptions>options, "response", []);
@@ -57,7 +57,7 @@ export const ifElse: ExtPipe = async (
     stream = {},
     localStore: PipeStore = globalStore
 ) => {
-    options = helpers.getFormattedOptions(options, localStore);
+    options = helpers.getFormattedOptions(options, stream, localStore);
     const conditionResult: PipeResult = await helpers.getSubResult(
         <PipeOptions>options,
         stream
@@ -73,7 +73,7 @@ export const not: ExtPipe = async (
     stream = {},
     localStore: PipeStore = globalStore
 ) => {
-    options = helpers.getFormattedOptions(options, localStore);
+    options = helpers.getFormattedOptions(options, stream, localStore);
     const result: PipeResult = await helpers.getSubResult(
         <PipeOptions>options,
         stream
@@ -125,7 +125,7 @@ export const switchCase: ExtPipe = async (
     stream = {},
     localStore: PipeStore = globalStore
 ) => {
-    options = helpers.getFormattedOptions(options, localStore);
+    options = helpers.getFormattedOptions(options, stream, localStore);
     let result: PipeResult = {};
     result.status = true;
     if (
@@ -143,7 +143,7 @@ export const switchCaseBreak: ExtPipe = async (
     stream = {},
     localStore: PipeStore = globalStore
 ) => {
-    options = helpers.getFormattedOptions(options, localStore);
+    options = helpers.getFormattedOptions(options, stream, localStore);
     let result: PipeResult = {};
     result.status = true;
     if (
@@ -162,7 +162,7 @@ export const switchDefault: ExtPipe = async (
     stream = {},
     localStore: PipeStore = globalStore
 ) => {
-    options = helpers.getFormattedOptions(options, localStore);
+    options = helpers.getFormattedOptions(options, stream, localStore);
     let result: PipeResult = {};
     result.status = true;
     if (stream.switchExp && !stream.switchMatched) {
@@ -184,7 +184,7 @@ export const then: ExtPipe = async (
     stream = {},
     localStore: PipeStore = globalStore
 ) => {
-    options = helpers.getFormattedOptions(options, localStore);
+    options = helpers.getFormattedOptions(options, stream, localStore);
     let result: PipeResult = {};
     result.status = true;
     for (let pipe of $$.getKeyArr(<PipeOptions>options, "pipes")) {

@@ -26,6 +26,10 @@ export type PipeOptions = {
     value?: any;
 };
 
+export type PipeOptionsResolver = (stream: {
+    [key: string]: any;
+}) => PipeGeneral | PipeOptions;
+
 export type PipeResult = {
     status?: boolean;
     response?: string | string[];

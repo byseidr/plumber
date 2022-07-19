@@ -5,6 +5,7 @@ import {
     Pipe,
     PipeGeneral,
     PipeOptions,
+    PipeOptionsResolver,
     PipeResult,
     PipeStore,
     PipeSubResultFilter,
@@ -54,15 +55,17 @@ export const addSubStatus = (
 };
 
 export const getFormattedOptions = (
-    options: PipeGeneral | PipeOptions,
+    options: PipeGeneral | PipeOptions | PipeOptionsResolver,
+    stream: { [key: string]: any },
     pipeStore?: PipeStore
 ) => {
+    if ($$.isFunc(options)) options = (<PipeOptionsResolver>options)(stream);
     if (!$$.isObj(options))
         options = {
             pipes: <PipeGeneral>options,
         };
-    options = getMergedPipes(options);
-    options = getFormattedPipes(options, pipeStore);
+    options = getMergedPipes(<PipeGeneral | PipeOptions>options);
+    options = getFormattedPipes(<PipeGeneral | PipeOptions>options, pipeStore);
     return options;
 };
 
