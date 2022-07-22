@@ -136,8 +136,7 @@ export const getSubResult = async (
 };
 
 export const hasResponse = (result: PipeResult): boolean => {
-    const hasResponse =
-        $$.hasKeyStr(result, "response") || $$.hasKeyArr(result, "response");
+    const hasResponse = $$.hasKey(result, "response");
     const isNotEmpty = !$$.isEmpty(result.response);
     return hasResponse && isNotEmpty;
 };
