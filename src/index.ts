@@ -171,8 +171,10 @@ export const switchDefault: ExtPipe = async (
 
 export const switchExp: ExtPipe = async (options, stream = {}) => {
     let result: PipeResult = {};
-    stream.switchExp =
-        (<PipeOptions>options).exp || (<PipeOptions>options).expression;
+    if ($$.hasKey(<PipeOptions>options, "exp"))
+        stream.switchExp = (<PipeOptions>options).exp;
+    else if ($$.hasKey(<PipeOptions>options, "expression"))
+        stream.switchExp = (<PipeOptions>options).expression;
     result.status = $$.hasKey(stream, "switchExp");
     return result;
 };
