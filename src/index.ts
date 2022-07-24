@@ -113,10 +113,8 @@ export const setStore = (store?: PipeStore) => {
 export const switchBreak: Pipe = async (stream = {}) => {
     let result: PipeResult = {};
     result.status = true;
-    if (stream.switchExp && stream.switchMatched) {
-        stream.switchExp = undefined;
-        stream.switchMatched = undefined;
-    }
+    if ($$.hasKey(stream, "switchExp")) stream.switchExp = undefined;
+    if ($$.hasKey(stream, "switchMatched")) stream.switchMatched = undefined;
     return result;
 };
 
@@ -165,7 +163,7 @@ export const switchDefault: ExtPipe = async (
     options = helpers.getFormattedOptions(options, stream, localStore);
     let result: PipeResult = {};
     result.status = true;
-    if (stream.switchExp && !stream.switchMatched) {
+    if ($$.hasKey(stream, "switchExp") && !stream.switchMatched) {
         result = await helpers.getSubResult(<PipeOptions>options, stream);
     }
     return result;
@@ -175,7 +173,7 @@ export const switchExp: ExtPipe = async (options, stream = {}) => {
     let result: PipeResult = {};
     stream.switchExp =
         (<PipeOptions>options).exp || (<PipeOptions>options).expression;
-    result.status = !!stream.switchExp;
+    result.status = $$.hasKey(stream, "switchExp");
     return result;
 };
 
