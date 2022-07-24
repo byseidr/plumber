@@ -175,6 +175,7 @@ export const switchExp: ExtPipe = async (options, stream = {}) => {
         stream.switchExp = (<PipeOptions>options).exp;
     else if ($$.hasKey(<PipeOptions>options, "expression"))
         stream.switchExp = (<PipeOptions>options).expression;
+    if ($$.hasKey(stream, "switchMatched")) stream.switchMatched = undefined;
     result.status = $$.hasKey(stream, "switchExp");
     return result;
 };
