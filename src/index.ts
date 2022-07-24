@@ -165,6 +165,7 @@ export const switchDefault: ExtPipe = async (
     result.status = true;
     if ($$.hasKey(stream, "switchExp") && stream.switchMatched === false) {
         result = await helpers.getSubResult(<PipeOptions>options, stream);
+        await switchBreak(stream);
     }
     return result;
 };
