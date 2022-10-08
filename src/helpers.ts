@@ -64,13 +64,13 @@ export const getFormattedOptions = (
         options = {
             pipes: <PipeGeneral>options,
         };
-    options = getMergedPipes(<PipeGeneral | PipeOptions>options);
-    options = getFormattedPipes(<PipeGeneral | PipeOptions>options, pipeStore);
+    options = getMergedPipes(<PipeOptions>options);
+    options = getFormattedPipes(<PipeOptions>options, pipeStore);
     return options;
 };
 
 export const getFormattedPipes = (
-    options: PipeGeneral | PipeOptions,
+    options: PipeOptions,
     pipeStore?: PipeStore
 ) => {
     if ((<PipeOptions>options).pipes) {
@@ -83,7 +83,7 @@ export const getFormattedPipes = (
     return options;
 };
 
-export const getMergedPipes = (options: PipeGeneral | PipeOptions) => {
+export const getMergedPipes = (options: PipeOptions) => {
     if ((<PipeOptions>options).pipe) {
         const pipe = $$.toArr((<PipeOptions>options).pipe);
         const pipes = $$.toArr((<PipeOptions>options).pipes);
