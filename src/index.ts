@@ -157,12 +157,16 @@ export const switchDefault: ExtPipe = async (
     return result;
 };
 
-export const switchExp: ExtPipe = async (options, stream = {}) => {
+export const switchExp: ExtPipe = async (
+    options,
+    stream = {},
+    localStore: PipeStore = globalStore
+) => {
+    options = helpers.getFormattedOptions(options, stream, localStore);
     let result: PipeResult = {};
-    if ($$.hasKey(<PipeOptions>options, "exp"))
-        stream.switchExp = (<PipeOptions>options).exp;
-    else if ($$.hasKey(<PipeOptions>options, "expression"))
-        stream.switchExp = (<PipeOptions>options).expression;
+    if ($$.hasKey(options, "exp")) stream.switchExp = options.exp;
+    else if ($$.hasKey(options, "expression"))
+        stream.switchExp = options.expression;
     stream.switchMatched = false;
     result.status = $$.hasKey(stream, "switchExp");
     return result;
