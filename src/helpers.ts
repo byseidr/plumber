@@ -9,11 +9,12 @@ import {
     PipeResult,
     PipeStore,
     PipeSubResultFilter,
+    Stream,
 } from "./types";
 
 export const addSubResults = async (
     options: PipeOptions,
-    stream: { [key: string]: any },
+    stream: Stream,
     result: PipeResult,
     response: string[]
 ): Promise<void> => {
@@ -56,7 +57,7 @@ export const addSubStatus = (
 
 export const getFormattedOptions = (
     options: PipeGeneral | PipeOptions | PipeOptionsResolver,
-    stream: { [key: string]: any },
+    stream: Stream,
     pipeStore?: PipeStore
 ) => {
     if ($$.isFunc(options)) options = (<PipeOptionsResolver>options)(stream);
@@ -121,7 +122,7 @@ export const filterSubResult = (
 
 export const getSubResult = async (
     options: PipeOptions,
-    stream: { [key: string]: any },
+    stream: Stream,
     index: number = 0,
     defaultVal: PipeResult = { status: false }
 ) => {
