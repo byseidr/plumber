@@ -13,8 +13,8 @@ export const and: ExtPipe = async (
 ) => {
     options = helpers.getFormattedOptions(options, stream, localStore);
     options.initialStatus = true;
-    options.reducer = (acc, curr) => acc && curr;
-    options.responseFilter = (result, subResult) =>
+    options.reducer = (acc: boolean, curr: boolean) => acc && curr;
+    options.responseFilter = (result: PipeResult, subResult: PipeResult) =>
         result?.status === subResult?.status;
     const result = await compare(options, stream, localStore);
     return result;
@@ -84,8 +84,8 @@ export const or: ExtPipe = async (
 ) => {
     options = helpers.getFormattedOptions(options, stream, localStore);
     options.initialStatus = false;
-    options.reducer = (acc, curr) => acc || curr;
-    options.responseFilter = (result, subResult) =>
+    options.reducer = (acc: boolean, curr: boolean) => acc || curr;
+    options.responseFilter = (result: PipeResult, subResult: PipeResult) =>
         result?.status === subResult?.status;
     const result: PipeResult = await compare(options, stream, localStore);
     return result;
