@@ -15,15 +15,7 @@ export type PipeGeneral =
     | string[][];
 
 export type PipeOptions = {
-    exp?: any;
-    expression?: any;
-    pipe?: PipeGeneral;
-    pipes?: PipeGeneral;
-    initialStatus?: boolean;
-    response?: string;
-    reducer?: (acc: boolean, curr: boolean) => boolean;
-    responseFilter?: PipeSubResultFilter;
-    value?: any;
+    [key: string]: any;
 };
 
 export type PipeOptionsResolver = (stream: {
