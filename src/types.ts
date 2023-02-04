@@ -22,7 +22,7 @@ export type PipeOptionsResolver = (stream: Stream) => PipeGeneral | PipeOptions;
 
 export type PipeResult = {
     status?: boolean;
-    response?: string | string[];
+    response?: any;
 };
 
 export type PipeStore = { [key: string]: Pipe | ExtPipe };
