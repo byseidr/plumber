@@ -2,9 +2,9 @@ export type ExtPipe = (
     options: PipeGeneral | PipeOptions,
     stream: Stream,
     localStore?: PipeStore
-) => Promise<PipeResult>;
+) => PipeResult | Promise<PipeResult>;
 
-export type Pipe = (stream: Stream) => Promise<PipeResult>;
+export type Pipe = (stream: Stream) => PipeResult | Promise<PipeResult>;
 
 export type PipeGeneral =
     | Pipe
