@@ -55,6 +55,36 @@ export const addSubStatus = (
     );
 };
 
+export const getExp = async (
+    options: PipeOptions,
+    stream: Stream
+): Promise<[PipeResult | any, number]> => {
+    const optionResult = await getOptionExp(options, stream);
+    let nextPipe = 0;
+    if (optionResult) return [optionResult, nextPipe];
+    const pipeResult: PipeResult = await getSubResult(options, stream);
+    nextPipe++;
+    return [pipeResult, nextPipe];
+};
+
+export const getExpOrResponse = async (
+    options: PipeOptions,
+    stream: Stream
+): Promise<[any, number]> => {
+    const [exp, nextPipe] = await getExp(options, stream);
+    const response = exp?.response ?? exp;
+    return [response, nextPipe];
+};
+
+export const getExpOrStatus = async (
+    options: PipeOptions,
+    stream: Stream
+): Promise<[boolean, number]> => {
+    const [exp, nextPipe] = await getExp(options, stream);
+    const status = exp?.status ?? !!exp;
+    return [status, nextPipe];
+};
+
 export const getFormattedOptions = (
     options: PipeGeneral | PipeOptions | PipeOptionsResolver,
     stream: Stream,
@@ -94,6 +124,14 @@ export const getMergedPipes = (options: PipeOptions) => {
         };
     }
     return options;
+};
+
+export const getOptionExp = async (
+    options: PipeOptions,
+    stream: Stream
+): Promise<PipeResult | any> => {
+    const exp = options.exp ?? options.expression;
+    return $$.isFunc(exp) ? await getSubResult(options, stream) : exp;
 };
 
 export const getFormattedPipe = (
