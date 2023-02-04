@@ -54,13 +54,11 @@ export const ifElse: ExtPipe = async (
     localStore: PipeStore = globalStore
 ) => {
     options = helpers.getFormattedOptions(options, stream, localStore);
-    const conditionResult: PipeResult = await helpers.getSubResult(
-        options,
-        stream
-    );
-    const result: PipeResult = conditionResult.status
-        ? await helpers.getSubResult(options, stream, 1)
-        : await helpers.getSubResult(options, stream, 2);
+    const [condition, nextPipe]: [boolean, number] =
+        await helpers.getExpOrStatus(options, stream);
+    const result = condition
+        ? await helpers.getSubResult(options, stream, nextPipe)
+        : await helpers.getSubResult(options, stream, nextPipe + 1);
     return result;
 };
 
