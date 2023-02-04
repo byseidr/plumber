@@ -126,6 +126,19 @@ export const getMergedPipes = (options: PipeOptions) => {
     return options;
 };
 
+export const getOptionCases = (options: PipeOptions) => {
+    const result: [any?, (Pipe | ExtPipe)?] = [];
+    if (options?.cases) {
+        result.push(...options.cases);
+        return result;
+    }
+    if (!options?.case1) return result;
+    $$.getSortedKeys(options).forEach((key) => {
+        if (/case\d+/.test(key)) result.push(options[key]);
+    });
+    return result;
+};
+
 export const getOptionExp = async (
     options: PipeOptions,
     stream: Stream
