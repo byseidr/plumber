@@ -162,9 +162,8 @@ export const switchExp: ExtPipe = async (
 ) => {
     options = helpers.getFormattedOptions(options, stream, localStore);
     let result: PipeResult = {};
-    if ($$.hasKey(options, "exp")) stream.switchExp = options.exp;
-    else if ($$.hasKey(options, "expression"))
-        stream.switchExp = options.expression;
+    const [exp] = await helpers.getExpOrResponse(options, stream);
+    if (exp) stream.switchExp = exp;
     stream.switchMatched = false;
     result.status = $$.hasKey(stream, "switchExp");
     return result;
