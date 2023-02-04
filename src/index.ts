@@ -101,6 +101,29 @@ export const setStore = (store?: PipeStore) => {
     globalStore = store ? { ...exports, ...store } : { ...exports };
 };
 
+export const switchBlock: ExtPipe = async (
+    options,
+    stream = {},
+    localStore: PipeStore = globalStore
+) => {
+    options = helpers.getFormattedOptions(options, stream, localStore);
+    const exp = await helpers.getExpOrResponse(options, stream);
+    const cases = helpers.getOptionCases(options);
+    const result: PipeResult = await then(
+        {
+            pipes: [
+                switchExp.bind(null, { exp }),
+                ...cases.map(([value, pipe]) =>
+                    switchCaseBreak.bind(null, { value, pipe })
+                ),
+                switchDefault.bind(null, options.default),
+            ],
+        },
+        stream
+    );
+    return result;
+};
+
 export const switchBreak: Pipe = async (stream = {}) => {
     let result: PipeResult = {};
     result.status = true;
