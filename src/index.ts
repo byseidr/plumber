@@ -2,7 +2,7 @@ import * as $$ from "richierich";
 
 import * as helpers from "./helpers";
 
-import { ExtPipe, Pipe, PipeOptions, PipeResult, PipeStore } from "./types";
+import { ExtPipe, Pipe, PipeResult, PipeStore } from "./types";
 
 var globalStore: PipeStore;
 
