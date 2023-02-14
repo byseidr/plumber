@@ -68,10 +68,12 @@ export const not: ExtPipe = async (
     localStore: PipeStore = globalStore
 ) => {
     options = helpers.getFormattedOptions(options, stream, localStore);
-    const result: PipeResult = await helpers.getSubResult(options, stream);
-    result.status = !result.status;
+    let result: PipeResult = {};
+    const subResult: PipeResult = await helpers.getSubResult(options, stream);
+    result.status = !subResult.status;
     if ($$.hasKey(options, "response")) result.response = options.response;
-    else if (helpers.hasResponse(result)) result.response = result.response;
+    else if (helpers.hasResponse(subResult))
+        result.response = subResult.response;
     return result;
 };
 
