@@ -12,6 +12,11 @@ import {
     Stream,
 } from "./types";
 
+export const addStreamResult = (stream: Stream, result: PipeResult) => {
+    if ($$.hasKey(result, "status")) stream.status = result.status;
+    if ($$.hasKey(result, "response")) stream.response = result.response;
+};
+
 export const addSubResults = async (
     options: PipeOptions,
     stream: Stream,
@@ -23,6 +28,8 @@ export const addSubResults = async (
         const subResult = await pipe(stream);
         addSubStatus(options, result, subResult);
         subResults.push(subResult);
+        if (options.disableResultPropagation) continue;
+        addStreamResult(stream, subResult);
     }
     for (let subResult of subResults) {
         addSubResponse(options, response, result, subResult);
@@ -184,6 +191,8 @@ export const getSubResult = async (
         options.pipes!.length >= index + 1
     )
         result = await (<Pipe[]>options.pipes!)[index](stream);
+    if (options.disableResultPropagation) return result;
+    addStreamResult(stream, result);
     return result;
 };
 

@@ -201,7 +201,10 @@ export const then: ExtPipe = async (
     let result: PipeResult = {};
     result.status = true;
     for (let pipe of $$.getKeyArr(options, "pipes")) {
-        if ($$.getKey(result, "status", true)) result = await pipe(stream);
+        if (!$$.getKey(result, "status", true)) continue;
+        result = await pipe(stream);
+        if (options.disableResultPropagation) continue;
+        helpers.addStreamResult(stream, result);
     }
     return result;
 };
