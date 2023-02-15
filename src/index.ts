@@ -118,7 +118,7 @@ export const setArr: ExtPipe = async (
     } else {
         result.status = !!optional || false;
     }
-    result.response = options.response;
+    addOptionResponse(options, result);
     return result;
 };
 
@@ -136,7 +136,7 @@ export const setBool: ExtPipe = async (
     } else {
         result.status = !!optional || false;
     }
-    result.response = options.response;
+    addOptionResponse(options, result);
     return result;
 };
 
@@ -154,7 +154,7 @@ export const setNum: ExtPipe = async (
     } else {
         result.status = !!optional || false;
     }
-    result.response = options.response;
+    addOptionResponse(options, result);
     return result;
 };
 
@@ -172,7 +172,7 @@ export const setObj: ExtPipe = async (
     } else {
         result.status = !!optional || false;
     }
-    result.response = options.response;
+    addOptionResponse(options, result);
     return result;
 };
 
@@ -194,7 +194,7 @@ export const setStr: ExtPipe = async (
     } else {
         result.status = !!optional || false;
     }
-    result.response = options.response;
+    addOptionResponse(options, result);
     return result;
 };
 
