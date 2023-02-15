@@ -299,11 +299,11 @@ export const then: ExtPipe = async (
     options = getFormattedOptions(options, stream, localStore);
     let result: PipeResult = {};
     result.status = true;
-    for (let pipe of $$.getKeyArr(options, "pipes")) {
-        if (!$$.getKey(result, "status", true)) break;
-        result = await pipe(stream);
-        if (options.disableResultPropagation) continue;
-        addStreamResult(stream, result);
+    let i = 0;
+    while ($$.getKeyArr(options, "pipes", false)) {
+        if (!result.status) break;
+        result = await getSubResult(options, stream, i);
+        i++;
     }
     return result;
 };
