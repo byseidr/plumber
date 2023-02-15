@@ -2,14 +2,12 @@ import * as $$ from "richierich";
 
 import {
     addOptionResponse,
-    addStreamResult,
     addSubResults,
     getExpOrResponse,
     getExpOrStatus,
     getFormattedOptions,
     getOptionCases,
     getSubResult,
-    hasResponse,
 } from "./helpers";
 import { ExtPipe, Pipe, PipeResult, PipeStore } from "./types";
 
