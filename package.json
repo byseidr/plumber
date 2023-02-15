@@ -1,6 +1,6 @@
 {
     "name": "plumbio",
-    "version": "8.3.0",
+    "version": "9.0.0",
     "description": "Logic plumbing functions for your JavaScript data.",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
