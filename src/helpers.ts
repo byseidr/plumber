@@ -196,6 +196,7 @@ export const getSubResult = async (
     const subResult = await (<Pipe[]>options.pipes!)[index](stream);
     result.status = subResult.status;
     addSubResponse(options, result, subResult);
+    addOptionResponse(options, result);
     if (options.disableResultPropagation) return result;
     addStreamResult(stream, result);
     return result;
