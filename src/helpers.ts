@@ -12,6 +12,11 @@ import {
     Stream,
 } from "./types";
 
+export const addOptionResponse = (options: PipeOptions, result: PipeResult) => {
+    if (!$$.hasKey(options, "response") || $$.isEmpty(options.response)) return;
+    result.response = $$.getFunc(options.response, result.status);
+};
+
 export const addStreamResult = (stream: Stream, result: PipeResult) => {
     if ($$.hasKey(result, "status")) stream.status = result.status;
     if ($$.hasKey(result, "response")) stream.response = result.response;
