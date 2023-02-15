@@ -59,10 +59,7 @@ export const addSubStatus = (
     result: PipeResult,
     subResult: PipeResult
 ): void => {
-    result.status = options.reducer!(
-        $$.getKeyBool(result, "status"),
-        $$.getKeyBool(subResult, "status")
-    );
+    result.status = options.reducer!(getStatus(result), getStatus(subResult));
 };
 
 export const getExp = async (
