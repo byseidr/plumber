@@ -25,8 +25,7 @@ export const addStreamResult = (stream: Stream, result: PipeResult) => {
 export const addSubResults = async (
     options: PipeOptions,
     stream: Stream,
-    result: PipeResult,
-    response: string[]
+    result: PipeResult
 ): Promise<void> => {
     const subResults: PipeResult[] = [];
     for (let pipe of $$.getKeyArr(options, "pipes")) {
@@ -37,13 +36,12 @@ export const addSubResults = async (
         addStreamResult(stream, subResult);
     }
     for (let subResult of subResults) {
-        addSubResponse(options, response, result, subResult);
+        addSubResponse(options, result, subResult);
     }
 };
 
 export const addSubResponse = (
     options: PipeOptions,
-    response: string[],
     result: PipeResult,
     subResult: PipeResult
 ): void => {
@@ -52,7 +50,7 @@ export const addSubResponse = (
         hasResponse(subResult) &&
         filterSubResult(options?.responseFilter, result, subResult)
     ) {
-        response.push(...$$.toArr(subResult.response));
+        result.response.push(...$$.toArr(subResult.response));
     }
 };
 

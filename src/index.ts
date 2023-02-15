@@ -1,6 +1,7 @@
 import * as $$ from "richierich";
 
 import {
+    addOptionResponse,
     addStreamResult,
     addSubResults,
     getExpOrResponse,
@@ -48,11 +49,11 @@ export const compare: ExtPipe = async (
     options = getFormattedOptions(options, stream, localStore);
     const result: PipeResult = {};
     result.status = $$.getKeyBool(options, "initialStatus");
-    const response = $$.getKey(options, "response", []);
+    result.response = [];
     if ($$.hasKeyFunc(options, "reducer")) {
-        await addSubResults(options, stream, result, response);
+        await addSubResults(options, stream, result);
     }
-    if (!$$.isEmpty(response)) result.response = response;
+    addOptionResponse(options, result);
     return result;
 };
 
