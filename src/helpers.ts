@@ -50,7 +50,7 @@ export const addSubResponse = (
         hasResponse(subResult) &&
         filterSubResult(options?.responseFilter, result, subResult)
     ) {
-        result.response.push(...$$.toArr(subResult.response));
+        (result.response ??= []).push(...$$.toArr(subResult.response));
     }
 };
 
