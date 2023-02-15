@@ -59,7 +59,9 @@ export const addSubStatus = (
     result: PipeResult,
     subResult: PipeResult
 ): void => {
-    result.status = options.reducer!(getStatus(result), getStatus(subResult));
+    result.status = options?.reducer
+        ? options.reducer(getStatus(result), getStatus(subResult))
+        : getStatus(subResult);
 };
 
 export const getExp = async (
