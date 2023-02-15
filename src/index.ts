@@ -108,8 +108,98 @@ export const returnTrue: Pipe = async (stream = {}) => ({
     status: true,
 });
 
+export const setArr: ExtPipe = async (
+    options,
+    stream = {},
+    localStore: PipeStore = globalStore
+) => {
+    options = getFormattedOptions(options, stream, localStore);
+    const result: PipeResult = {};
+    const { name, optional, value } = options;
+    if (name && $$.isArr(value) && value.length) {
+        (stream.data ??= {})[name] = value;
+        result.status = true;
+    } else {
+        result.status = !!optional || false;
+    }
+    result.response = options.response;
+    return result;
+};
+
+export const setBool: ExtPipe = async (
+    options,
+    stream = {},
+    localStore: PipeStore = globalStore
+) => {
+    options = getFormattedOptions(options, stream, localStore);
+    const result: PipeResult = {};
+    const { name, optional, value } = options;
+    if (name && $$.isBool(value)) {
+        (stream.data ??= {})[name] = value;
+        result.status = true;
+    } else {
+        result.status = !!optional || false;
+    }
+    result.response = options.response;
+    return result;
+};
+
+export const setNum: ExtPipe = async (
+    options,
+    stream = {},
+    localStore: PipeStore = globalStore
+) => {
+    options = getFormattedOptions(options, stream, localStore);
+    const result: PipeResult = {};
+    const { name, optional, value } = options;
+    if (name && $$.isNum(value)) {
+        (stream.data ??= {})[name] = value;
+        result.status = true;
+    } else {
+        result.status = !!optional || false;
+    }
+    result.response = options.response;
+    return result;
+};
+
+export const setObj: ExtPipe = async (
+    options,
+    stream = {},
+    localStore: PipeStore = globalStore
+) => {
+    options = getFormattedOptions(options, stream, localStore);
+    const result: PipeResult = {};
+    const { name, optional, value } = options;
+    if (name && $$.isObj(value)) {
+        (stream.data ??= {})[name] = value;
+        result.status = true;
+    } else {
+        result.status = !!optional || false;
+    }
+    result.response = options.response;
+    return result;
+};
+
 export const setStore = (store?: PipeStore) => {
     globalStore = store ? { ...exports, ...store } : { ...exports };
+};
+
+export const setStr: ExtPipe = async (
+    options,
+    stream = {},
+    localStore: PipeStore = globalStore
+) => {
+    options = getFormattedOptions(options, stream, localStore);
+    const result: PipeResult = {};
+    const { name, optional, value } = options;
+    if (name && $$.isStr(value) && value) {
+        (stream.data ??= {})[name] = value;
+        result.status = true;
+    } else {
+        result.status = !!optional || false;
+    }
+    result.response = options.response;
+    return result;
 };
 
 export const switchBlock: ExtPipe = async (
