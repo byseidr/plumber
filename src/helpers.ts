@@ -202,6 +202,9 @@ export const getSubResult = async (
     return result;
 };
 
+export const getStatus = (result: PipeResult) =>
+    $$.hasKeyBool(result, "status") ? result.status : !!result.status;
+
 export const hasResponse = (result: PipeResult): boolean => {
     const hasResponse = $$.hasKey(result, "response");
     const isNotEmpty = !$$.isEmpty(result.response);
