@@ -187,13 +187,16 @@ export const getSubResult = async (
     index: number = 0,
     defaultVal: PipeResult = { status: false }
 ) => {
-    let result = defaultVal;
+    const result = defaultVal;
     if (
-        $$.hasKey(options, "pipes") &&
-        $$.isFuncArr(options.pipes!) &&
-        options.pipes!.length >= index + 1
+        !$$.hasKey(options, "pipes") ||
+        !$$.isFuncArr(options.pipes!) ||
+        options.pipes!.length < index + 1
     )
-        result = await (<Pipe[]>options.pipes!)[index](stream);
+        return result;
+    const subResult = await (<Pipe[]>options.pipes!)[index](stream);
+    result.status = subResult.status;
+    addSubResponse(options, result, subResult);
     if (options.disableResultPropagation) return result;
     addStreamResult(stream, result);
     return result;
