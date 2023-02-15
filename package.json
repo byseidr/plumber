@@ -24,6 +24,6 @@
         "typescript": "^4.4.2"
     },
     "dependencies": {
-        "richierich": "^7.4.0"
+        "richierich": "^7.6.0"
     }
 }
