@@ -198,6 +198,24 @@ export const setStr: ExtPipe = async (
     return result;
 };
 
+export const setTime: ExtPipe = async (
+    options,
+    stream = {},
+    localStore: PipeStore = globalStore
+) => {
+    options = getFormattedOptions(options, stream, localStore);
+    const result: PipeResult = {};
+    const { name } = options;
+    if (name) {
+        (stream.data ??= {})[name] = $$.nowInS();
+        result.status = true;
+    } else {
+        result.status = false;
+    }
+    addOptionResponse(options, result);
+    return result;
+};
+
 export const switchBlock: ExtPipe = async (
     options,
     stream = {},
