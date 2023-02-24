@@ -1,35 +1,39 @@
-export type ExtPipe = (
-    options: PipeGeneral | PipeOptions,
+export type ExtFitting = (
+    options: FittingGeneral | FittingOptions,
     stream: Stream,
-    localStore?: PipeStore
-) => PipeResult | Promise<PipeResult>;
+    localStore?: FittingStore
+) => FittingResult | Promise<FittingResult>;
 
-export type Pipe = (stream: Stream) => PipeResult | Promise<PipeResult>;
+export type Fitting = (
+    stream: Stream
+) => FittingResult | Promise<FittingResult>;
 
-export type PipeGeneral =
-    | Pipe
-    | ExtPipe
-    | (Pipe | ExtPipe)[]
+export type FittingGeneral =
+    | Fitting
+    | ExtFitting
+    | (Fitting | ExtFitting)[]
     | string
     | string[]
     | string[][];
 
-export type PipeOptions = {
+export type FittingOptions = {
     [key: string]: any;
 };
 
-export type PipeOptionsResolver = (stream: Stream) => PipeGeneral | PipeOptions;
+export type FittingOptionsResolver = (
+    stream: Stream
+) => FittingGeneral | FittingOptions;
 
-export type PipeResult = {
+export type FittingResult = {
     status?: boolean;
     response?: any;
 };
 
-export type PipeStore = { [key: string]: Pipe | ExtPipe };
+export type FittingStore = { [key: string]: Fitting | ExtFitting };
 
-export type PipeSubResultFilter = (
-    result: PipeResult,
-    subResult: PipeResult
+export type FittingSubResultFilter = (
+    result: FittingResult,
+    subResult: FittingResult
 ) => boolean;
 
 export type Stream = { [key: string]: any };
