@@ -36,3 +36,5 @@ export type FittingSubResultFilter = (
 ) => boolean;
 
 export type Stream = { [key: string]: any };
+
+export type StreamResolver = (options: FittingOptions) => Stream;
