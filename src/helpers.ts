@@ -224,7 +224,7 @@ export const getSubResult = async (
         options.fittings!.length < index + 1
     )
         return result;
-    const subResult = await (<Fitting[]>options.fittings!)[index](stream);
+    const subResult = await options.fittings[index](stream);
     addSubStatus(options, result, subResult);
     addSubResponse(options, result, subResult);
     addOptionResponse(options, result);
