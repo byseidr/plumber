@@ -27,6 +27,20 @@ export const addStreamResult = (stream: Stream, result: FittingResult) => {
     if ($$.hasKey(result, "response")) stream.response = result.response;
 };
 
+export const addSubResponse = (
+    options: Options,
+    result: FittingResult,
+    subResult: FittingResult
+): void => {
+    if (
+        !$$.hasKey(options, "response") &&
+        hasResponse(subResult) &&
+        filterSubResult(options?.responseFilter, result, subResult)
+    ) {
+        (result.response ??= []).push(...$$.toArr(subResult.response));
+    }
+};
+
 export const addSubResults = async (
     options: Options,
     stream: Stream,
@@ -45,20 +59,6 @@ export const addSubResults = async (
     }
 };
 
-export const addSubResponse = (
-    options: Options,
-    result: FittingResult,
-    subResult: FittingResult
-): void => {
-    if (
-        !$$.hasKey(options, "response") &&
-        hasResponse(subResult) &&
-        filterSubResult(options?.responseFilter, result, subResult)
-    ) {
-        (result.response ??= []).push(...$$.toArr(subResult.response));
-    }
-};
-
 export const addSubStatus = (
     options: Options,
     result: FittingResult,
@@ -67,6 +67,19 @@ export const addSubStatus = (
     result.status = options?.reducer
         ? options.reducer(getStatus(result), getStatus(subResult))
         : getStatus(subResult);
+};
+
+export const filterSubResult = (
+    filter: FittingSubResultFilter | undefined,
+    result: FittingResult,
+    subResult: FittingResult
+) => filter?.(result, subResult) ?? true;
+
+export const getBoundFitting = (fitting: FittingToBeBound, stream: Stream) => {
+    fitting[0] = getStoreFitting(fitting[0], stream);
+    if ($$.isFunc(fitting?.[0]) && fitting?.[1])
+        return fitting[0].bind(null, fitting[1]);
+    return fitting[0];
 };
 
 export const getExp = async (
@@ -110,19 +123,13 @@ export const getFormattedArgs = (
     return { options, stream };
 };
 
-export const getFormattedOptions = (
-    options: GenericOptions,
+export const getFormattedFitting = (
+    fitting: Fitting | FittingAlt,
     stream: Stream
-) => {
-    if ($$.isFunc(options)) options = (<OptionsResolver>options)(stream);
-    if (!$$.isObj(options))
-        options = {
-            fittings: <Exclude<OptionsAlt, OptionsResolver>>options,
-        };
-    options = getMergedFittings(<Options>options);
-    options = getFormattedFittings(<Options>options, stream);
-    return options;
-};
+) =>
+    $$.isArr(fitting)
+        ? <Fitting>getBoundFitting(<FittingToBeBound>fitting, stream)
+        : getStoreFitting(<Fitting | string>fitting, stream);
 
 export const getFormattedFittings = (options: Options, stream: Stream) => {
     if (options.fittings) {
@@ -134,6 +141,20 @@ export const getFormattedFittings = (options: Options, stream: Stream) => {
             ),
         };
     }
+    return options;
+};
+
+export const getFormattedOptions = (
+    options: GenericOptions,
+    stream: Stream
+) => {
+    if ($$.isFunc(options)) options = (<OptionsResolver>options)(stream);
+    if (!$$.isObj(options))
+        options = {
+            fittings: <Exclude<OptionsAlt, OptionsResolver>>options,
+        };
+    options = getMergedFittings(<Options>options);
+    options = getFormattedFittings(<Options>options, stream);
     return options;
 };
 
@@ -181,32 +202,14 @@ export const getOptionExp = async (
     return $$.isFunc(exp) ? await getSubResult(options, stream) : exp;
 };
 
-export const getFormattedFitting = (
-    fitting: Fitting | FittingAlt,
-    stream: Stream
-) =>
-    $$.isArr(fitting)
-        ? <Fitting>getBoundFitting(<FittingToBeBound>fitting, stream)
-        : getStoreFitting(<Fitting | string>fitting, stream);
-
-export const getBoundFitting = (fitting: FittingToBeBound, stream: Stream) => {
-    fitting[0] = getStoreFitting(fitting[0], stream);
-    if ($$.isFunc(fitting?.[0]) && fitting?.[1])
-        return fitting[0].bind(null, fitting[1]);
-    return fitting[0];
-};
+export const getStatus = (result: FittingResult) =>
+    $$.hasKeyBool(result, "status") ? result.status : !!result.status;
 
 export const getStoreFitting = (
     fitting: Fitting | string,
     stream: Stream
 ): Fitting =>
     $$.isStr(fitting) ? stream?.store?.[<string>fitting] ?? fitting : fitting;
-
-export const filterSubResult = (
-    filter: FittingSubResultFilter | undefined,
-    result: FittingResult,
-    subResult: FittingResult
-) => filter?.(result, subResult) ?? true;
 
 export const getSubResult = async (
     options: Options,
@@ -229,9 +232,6 @@ export const getSubResult = async (
     addStreamResult(stream, result);
     return result;
 };
-
-export const getStatus = (result: FittingResult) =>
-    $$.hasKeyBool(result, "status") ? result.status : !!result.status;
 
 export const hasResponse = (result: FittingResult): boolean => {
     const hasResponse = $$.hasKey(result, "response");
