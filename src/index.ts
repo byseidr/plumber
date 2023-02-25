@@ -74,13 +74,21 @@ export const or: Fitting = async (...args) => {
     return result;
 };
 
-export const returnFalse: Fitting = async (...args) => ({
-    status: false,
-});
+export const returnFalse: Fitting = async (...args) => {
+    const { options, stream } = getFormattedArgs(args, exports);
+    let result: FittingResult = {};
+    result.status = false;
+    addOptionResponse(options, result);
+    return result;
+};
 
-export const returnTrue: Fitting = async (...args) => ({
-    status: true,
-});
+export const returnTrue: Fitting = async (...args) => {
+    const { options, stream } = getFormattedArgs(args, exports);
+    let result: FittingResult = {};
+    result.status = true;
+    addOptionResponse(options, result);
+    return result;
+};
 
 export const setStore: Fitting = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
