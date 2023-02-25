@@ -7,7 +7,6 @@ import {
     FittingOptions,
     FittingOptionsResolver,
     FittingResult,
-    FittingStore,
     FittingSubResultFilter,
     Stream,
 } from "./types";
@@ -99,8 +98,7 @@ export const getExpOrStatus = async (
 
 export const getFormattedOptions = (
     options: FittingGeneral | FittingOptions | FittingOptionsResolver,
-    stream: Stream,
-    fittingStore?: FittingStore
+    stream: Stream
 ) => {
     if ($$.isFunc(options)) options = (<FittingOptionsResolver>options)(stream);
     if (!$$.isObj(options))
@@ -108,20 +106,20 @@ export const getFormattedOptions = (
             fittings: <FittingGeneral>options,
         };
     options = getMergedFittings(<FittingOptions>options);
-    options = getFormattedFittings(<FittingOptions>options, fittingStore);
+    options = getFormattedFittings(<FittingOptions>options, stream);
     return options;
 };
 
 export const getFormattedFittings = (
     options: FittingOptions,
-    fittingStore?: FittingStore
+    stream: Stream
 ) => {
     if ((<FittingOptions>options).fittings) {
         const fittings = $$.toArr((<FittingOptions>options).fittings);
         options = <FittingOptions>{
             ...(<FittingOptions>options),
             fittings: fittings.map((fitting) =>
-                getFormattedFitting(fitting, fittingStore)
+                getFormattedFitting(fitting, stream)
             ),
         };
     }
@@ -163,11 +161,11 @@ export const getOptionExp = async (
 
 export const getFormattedFitting = (
     fitting: Exclude<FittingGeneral, string[][]>,
-    fittingStore?: FittingStore
+    stream: Stream
 ) => {
     fitting = $$.toArr(fitting);
     if ($$.isStr(fitting[0]))
-        fitting[0] = fittingStore?.[<string>fitting[0]] ?? fitting[0];
+        fitting[0] = stream?.store?.[<string>fitting[0]] ?? fitting[0];
     if (fitting.length > 1) fitting = getFittingBounds(fitting);
     else fitting = fitting[0];
     return fitting;

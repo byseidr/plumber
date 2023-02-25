@@ -1,7 +1,6 @@
 export type ExtFitting = (
     options: FittingGeneral | FittingOptions,
-    stream: Stream,
-    localStore?: FittingStore
+    stream: Stream
 ) => FittingResult | Promise<FittingResult>;
 
 export type Fitting = (
