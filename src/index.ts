@@ -6,13 +6,15 @@ import {
     getExpOrResponse,
     getExpOrStatus,
     getFormattedOptions,
+    getFormattedStream,
     getOptionCases,
     getSubResult,
 } from "./helpers";
-import { ExtFitting, Fitting, FittingOptions, FittingResult } from "./types";
+import { ExtFitting, Fitting, FittingResult } from "./types";
 
 export const and: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     options.initialStatus = true;
     options.reducer = (acc: boolean, curr: boolean) => acc && curr;
     options.responseFilter = (
@@ -25,6 +27,7 @@ export const and: ExtFitting = async (options, stream = {}) => {
 
 export const append: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     let result = await getSubResult(options, stream);
     let appendResult = $$.omit(options, "fittings");
     result = { ...result, ...appendResult };
@@ -33,6 +36,7 @@ export const append: ExtFitting = async (options, stream = {}) => {
 
 export const compare: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     const result: FittingResult = {};
     result.status = $$.getKeyBool(options, "initialStatus");
     result.response = [];
@@ -45,6 +49,7 @@ export const compare: ExtFitting = async (options, stream = {}) => {
 
 export const ifElse: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     const [condition, nextFitting]: [boolean, number] = await getExpOrStatus(
         options,
         stream
@@ -57,6 +62,7 @@ export const ifElse: ExtFitting = async (options, stream = {}) => {
 
 export const not: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     const result = await getSubResult(options, stream);
     result.status = !result.status;
     return result;
@@ -64,6 +70,7 @@ export const not: ExtFitting = async (options, stream = {}) => {
 
 export const or: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     options.initialStatus = false;
     options.reducer = (acc: boolean, curr: boolean) => acc || curr;
     options.responseFilter = (
@@ -84,15 +91,15 @@ export const returnTrue: Fitting = async (stream = {}) => ({
 
 export const setStore: ExtFitting = (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     let result: FittingResult = {};
-    const { store } = <FittingOptions>options;
-    stream.store = store ? { ...exports, ...store } : { ...exports };
     result.status = true;
     return result;
 };
 
 export const switchBlock: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     const exp = await getExpOrResponse(options, stream);
     const cases = getOptionCases(options);
     const result: FittingResult = await then(
@@ -120,6 +127,7 @@ export const switchBreak: Fitting = async (stream = {}) => {
 
 export const switchCase: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     let result: FittingResult = {};
     result.status = true;
     if (stream.switchExp === options.value || stream.switchMatched) {
@@ -131,6 +139,7 @@ export const switchCase: ExtFitting = async (options, stream = {}) => {
 
 export const switchCaseBreak: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     let result: FittingResult = {};
     result.status = true;
     if (stream.switchExp === options.value || stream.switchMatched) {
@@ -143,6 +152,7 @@ export const switchCaseBreak: ExtFitting = async (options, stream = {}) => {
 
 export const switchDefault: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     let result: FittingResult = {};
     result.status = true;
     if ($$.hasKey(stream, "switchExp") && stream.switchMatched === false) {
@@ -154,6 +164,7 @@ export const switchDefault: ExtFitting = async (options, stream = {}) => {
 
 export const switchExp: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     let result: FittingResult = {};
     const [exp] = await getExpOrResponse(options, stream);
     if (exp) stream.switchExp = exp;
@@ -164,6 +175,7 @@ export const switchExp: ExtFitting = async (options, stream = {}) => {
 
 export const then: ExtFitting = async (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
+    stream = getFormattedStream(options, stream, exports);
     let result: FittingResult = {};
     result.status = true;
     let i = 0;
