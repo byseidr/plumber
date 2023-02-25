@@ -7,8 +7,10 @@ import {
     FittingOptions,
     FittingOptionsResolver,
     FittingResult,
+    FittingStore,
     FittingSubResultFilter,
     Stream,
+    StreamResolver,
 } from "./types";
 
 export const addOptionResponse = (
@@ -124,6 +126,17 @@ export const getFormattedFittings = (
         };
     }
     return options;
+};
+
+export const getFormattedStream = (
+    options: FittingOptions,
+    stream: Stream,
+    defaultStore: FittingStore
+) => {
+    if ($$.isFunc(stream)) stream = (<StreamResolver>stream)(options);
+    if (!$$.hasKey(stream, "store"))
+        stream.store = { ...defaultStore, ...(options?.store ?? {}) };
+    return stream;
 };
 
 export const getMergedFittings = (options: FittingOptions) => {
