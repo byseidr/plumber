@@ -3,11 +3,11 @@ import {
     addOptionResponse,
     getFormattedArgs,
 } from "@plumber/core/dist/helpers";
-import { Fitting, FittingResult } from "@plumber/core/dist/types";
+import { Pipe, PipeResult } from "@plumber/core/dist/types";
 
-export const setArr: Fitting = (...args) => {
+export const setArr: Pipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    const result: FittingResult = {};
+    const result: PipeResult = {};
     const { name, optional, value } = options;
     if (name && $$.isArr(value) && value.length) {
         (stream.data ??= {})[name] = value;
@@ -19,9 +19,9 @@ export const setArr: Fitting = (...args) => {
     return result;
 };
 
-export const setBool: Fitting = (...args) => {
+export const setBool: Pipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    const result: FittingResult = {};
+    const result: PipeResult = {};
     const { name, optional, value } = options;
     if (name && $$.isBool(value)) {
         (stream.data ??= {})[name] = value;
@@ -33,9 +33,9 @@ export const setBool: Fitting = (...args) => {
     return result;
 };
 
-export const setNum: Fitting = (...args) => {
+export const setNum: Pipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    const result: FittingResult = {};
+    const result: PipeResult = {};
     const { name, optional, value } = options;
     if (name && $$.isNum(value)) {
         (stream.data ??= {})[name] = value;
@@ -47,9 +47,9 @@ export const setNum: Fitting = (...args) => {
     return result;
 };
 
-export const setObj: Fitting = (...args) => {
+export const setObj: Pipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    const result: FittingResult = {};
+    const result: PipeResult = {};
     const { name, optional, value } = options;
     if (name && $$.isObj(value)) {
         (stream.data ??= {})[name] = value;
@@ -61,9 +61,9 @@ export const setObj: Fitting = (...args) => {
     return result;
 };
 
-export const setStr: Fitting = (...args) => {
+export const setStr: Pipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    const result: FittingResult = {};
+    const result: PipeResult = {};
     const { name, optional, value } = options;
     if (name && $$.isStr(value) && value) {
         (stream.data ??= {})[name] = value;
@@ -75,9 +75,9 @@ export const setStr: Fitting = (...args) => {
     return result;
 };
 
-export const setTime: Fitting = (...args) => {
+export const setTime: Pipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    const result: FittingResult = {};
+    const result: PipeResult = {};
     const { name } = options;
     if (name) {
         (stream.data ??= {})[name] = $$.nowInS();

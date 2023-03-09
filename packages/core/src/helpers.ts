@@ -1,36 +1,36 @@
 import * as $$ from "richierich";
 
 import {
-    Fitting,
-    FittingArgs,
+    Pipe,
+    PipeArgs,
     Options,
-    FittingResult,
-    FittingStore,
-    FittingSubResultFilter,
+    PipeResult,
+    PipeStore,
+    PipeSubResultFilter,
     Stream,
     StreamResolver,
     GenericOptions,
     OptionsResolver,
     OptionsAlt,
-    FittingAlt,
-    FittingToBeBound,
+    PipeAlt,
+    PipeToBeBound,
     GenericStream,
 } from "./types";
 
-export const addOptionResponse = (options: Options, result: FittingResult) => {
+export const addOptionResponse = (options: Options, result: PipeResult) => {
     if (!$$.hasKey(options, "response") || $$.isEmpty(options.response)) return;
     result.response = $$.getFunc(options.response, result.status);
 };
 
-export const addStreamResult = (stream: Stream, result: FittingResult) => {
+export const addStreamResult = (stream: Stream, result: PipeResult) => {
     if ($$.hasKey(result, "status")) stream.status = result.status;
     if ($$.hasKey(result, "response")) stream.response = result.response;
 };
 
 export const addSubResponse = (
     options: Options,
-    result: FittingResult,
-    subResult: FittingResult
+    result: PipeResult,
+    subResult: PipeResult
 ): void => {
     if (
         !$$.hasKey(options, "response") &&
@@ -44,11 +44,11 @@ export const addSubResponse = (
 export const addSubResults = async (
     options: Options,
     stream: Stream,
-    result: FittingResult
+    result: PipeResult
 ): Promise<void> => {
-    const subResults: FittingResult[] = [];
-    for (let fitting of $$.getKeyArr(options, "fittings")) {
-        const subResult = await fitting(stream);
+    const subResults: PipeResult[] = [];
+    for (let pipe of $$.getKeyArr(options, "pipes")) {
+        const subResult = await pipe(stream);
         addSubStatus(options, result, subResult);
         subResults.push(subResult);
         if (options.disableResultPropagation) continue;
@@ -61,8 +61,8 @@ export const addSubResults = async (
 
 export const addSubStatus = (
     options: Options,
-    result: FittingResult,
-    subResult: FittingResult
+    result: PipeResult,
+    subResult: PipeResult
 ): void => {
     result.status = options?.reducer
         ? options.reducer(getStatus(result), getStatus(subResult))
@@ -70,52 +70,48 @@ export const addSubStatus = (
 };
 
 export const filterSubResult = (
-    filter: FittingSubResultFilter | undefined,
-    result: FittingResult,
-    subResult: FittingResult
+    filter: PipeSubResultFilter | undefined,
+    result: PipeResult,
+    subResult: PipeResult
 ) => filter?.(result, subResult) ?? true;
 
-export const getBoundFitting = (fitting: FittingToBeBound, stream: Stream) => {
-    fitting[0] = getStoreFitting(fitting[0], stream);
-    if ($$.isFunc(fitting?.[0]) && fitting?.[1])
-        return fitting[0].bind(null, fitting[1]);
-    return fitting[0];
+export const getBoundPipe = (pipe: PipeToBeBound, stream: Stream) => {
+    pipe[0] = getStorePipe(pipe[0], stream);
+    if ($$.isFunc(pipe?.[0]) && pipe?.[1]) return pipe[0].bind(null, pipe[1]);
+    return pipe[0];
 };
 
 export const getExp = async (
     options: Options,
     stream: Stream
-): Promise<[FittingResult | any, number]> => {
+): Promise<[PipeResult | any, number]> => {
     const optionResult = await getOptionExp(options, stream);
-    let nextFitting = 0;
-    if (optionResult) return [optionResult, nextFitting];
-    const fittingResult: FittingResult = await getSubResult(options, stream);
-    nextFitting++;
-    return [fittingResult, nextFitting];
+    let nextPipe = 0;
+    if (optionResult) return [optionResult, nextPipe];
+    const pipeResult: PipeResult = await getSubResult(options, stream);
+    nextPipe++;
+    return [pipeResult, nextPipe];
 };
 
 export const getExpOrResponse = async (
     options: Options,
     stream: Stream
 ): Promise<[any, number]> => {
-    const [exp, nextFitting] = await getExp(options, stream);
+    const [exp, nextPipe] = await getExp(options, stream);
     const response = exp?.response ?? exp;
-    return [response, nextFitting];
+    return [response, nextPipe];
 };
 
 export const getExpOrStatus = async (
     options: Options,
     stream: Stream
 ): Promise<[boolean, number]> => {
-    const [exp, nextFitting] = await getExp(options, stream);
+    const [exp, nextPipe] = await getExp(options, stream);
     const status = exp?.status ?? !!exp;
-    return [status, nextFitting];
+    return [status, nextPipe];
 };
 
-export const getFormattedArgs = (
-    args: FittingArgs,
-    defaultStore: FittingStore
-) => {
+export const getFormattedArgs = (args: PipeArgs, defaultStore: PipeStore) => {
     let options = args.length > 1 ? args[0] : {};
     let stream = <Stream>(args.length > 1 ? args[1] : args[0]);
     options = getFormattedOptions(options, stream);
@@ -123,22 +119,17 @@ export const getFormattedArgs = (
     return { options, stream };
 };
 
-export const getFormattedFitting = (
-    fitting: Fitting | FittingAlt,
-    stream: Stream
-) =>
-    $$.isArr(fitting)
-        ? <Fitting>getBoundFitting(<FittingToBeBound>fitting, stream)
-        : getStoreFitting(<Fitting | string>fitting, stream);
+export const getFormattedPipe = (pipe: Pipe | PipeAlt, stream: Stream) =>
+    $$.isArr(pipe)
+        ? <Pipe>getBoundPipe(<PipeToBeBound>pipe, stream)
+        : getStorePipe(<Pipe | string>pipe, stream);
 
-export const getFormattedFittings = (options: Options, stream: Stream) => {
-    if (options.fittings) {
-        const fittings = $$.toArr(options.fittings);
+export const getFormattedPipes = (options: Options, stream: Stream) => {
+    if (options.pipes) {
+        const pipes = $$.toArr(options.pipes);
         options = {
             ...options,
-            fittings: fittings.map((fitting) =>
-                getFormattedFitting(fitting, stream)
-            ),
+            pipes: pipes.map((pipe) => getFormattedPipe(pipe, stream)),
         };
     }
     return options;
@@ -151,17 +142,17 @@ export const getFormattedOptions = (
     if ($$.isFunc(options)) options = (<OptionsResolver>options)(stream);
     if (!$$.isObj(options))
         options = {
-            fittings: <Exclude<OptionsAlt, OptionsResolver>>options,
+            pipes: <Exclude<OptionsAlt, OptionsResolver>>options,
         };
-    options = getMergedFittings(<Options>options);
-    options = getFormattedFittings(<Options>options, stream);
+    options = getMergedPipes(<Options>options);
+    options = getFormattedPipes(<Options>options, stream);
     return options;
 };
 
 export const getFormattedStream = (
     options: Options,
     stream: GenericStream,
-    defaultStore: FittingStore
+    defaultStore: PipeStore
 ) => {
     if ($$.isFunc(stream)) stream = (<StreamResolver>stream)(options);
     if (!$$.hasKey(stream, "store"))
@@ -169,20 +160,20 @@ export const getFormattedStream = (
     return stream;
 };
 
-export const getMergedFittings = (options: Options) => {
-    if (options.fitting) {
-        const fitting = $$.toArr(options.fitting);
-        const fittings = $$.toArr(options.fittings);
+export const getMergedPipes = (options: Options) => {
+    if (options.pipe) {
+        const pipe = $$.toArr(options.pipe);
+        const pipes = $$.toArr(options.pipes);
         options = {
-            ...$$.omit(options, "fitting"),
-            fittings: [...fitting, ...fittings].filter(Boolean),
+            ...$$.omit(options, "pipe"),
+            pipes: [...pipe, ...pipes].filter(Boolean),
         };
     }
     return options;
 };
 
 export const getOptionCases = (options: Options) => {
-    const result: [any?, Fitting?] = [];
+    const result: [any?, Pipe?] = [];
     if (options?.cases) {
         result.push(...options.cases);
         return result;
@@ -197,34 +188,31 @@ export const getOptionCases = (options: Options) => {
 export const getOptionExp = async (
     options: Options,
     stream: Stream
-): Promise<FittingResult | any> => {
+): Promise<PipeResult | any> => {
     const exp = options.exp ?? options.expression;
     return $$.isFunc(exp) ? await getSubResult(options, stream) : exp;
 };
 
-export const getStatus = (result: FittingResult) =>
+export const getStatus = (result: PipeResult) =>
     $$.hasKeyBool(result, "status") ? result.status : !!result.status;
 
-export const getStoreFitting = (
-    fitting: Fitting | string,
-    stream: Stream
-): Fitting =>
-    $$.isStr(fitting) ? stream?.store?.[<string>fitting] ?? fitting : fitting;
+export const getStorePipe = (pipe: Pipe | string, stream: Stream): Pipe =>
+    $$.isStr(pipe) ? stream?.store?.[<string>pipe] ?? pipe : pipe;
 
 export const getSubResult = async (
     options: Options,
     stream: Stream,
     index: number = 0,
-    defaultVal: FittingResult = { status: false }
+    defaultVal: PipeResult = { status: false }
 ) => {
     const result = defaultVal;
     if (
-        !$$.hasKey(options, "fittings") ||
-        !$$.isFuncArr(options.fittings!) ||
-        options.fittings!.length < index + 1
+        !$$.hasKey(options, "pipes") ||
+        !$$.isFuncArr(options.pipes!) ||
+        options.pipes!.length < index + 1
     )
         return result;
-    const subResult = await options.fittings[index](stream);
+    const subResult = await options.pipes[index](stream);
     addSubStatus(options, result, subResult);
     addSubResponse(options, result, subResult);
     addOptionResponse(options, result);
@@ -233,7 +221,7 @@ export const getSubResult = async (
     return result;
 };
 
-export const hasResponse = (result: FittingResult): boolean => {
+export const hasResponse = (result: PipeResult): boolean => {
     const hasResponse = $$.hasKey(result, "response");
     const isNotEmpty = !$$.isEmpty(result.response);
     return hasResponse && isNotEmpty;

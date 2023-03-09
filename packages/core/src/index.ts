@@ -9,31 +9,29 @@ import {
     getOptionCases,
     getSubResult,
 } from "./helpers";
-import { Fitting, FittingResult } from "./types";
+import { Pipe, PipeResult } from "./types";
 
-export const and: Fitting = async (...args) => {
+export const and: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     options.initialStatus = true;
     options.reducer = (acc: boolean, curr: boolean) => acc && curr;
-    options.responseFilter = (
-        result: FittingResult,
-        subResult: FittingResult
-    ) => result?.status === subResult?.status;
+    options.responseFilter = (result: PipeResult, subResult: PipeResult) =>
+        result?.status === subResult?.status;
     const result = await compare(options, stream);
     return result;
 };
 
-export const append: Fitting = async (...args) => {
+export const append: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result = await getSubResult(options, stream);
-    let appendResult = $$.omit(options, "fittings");
+    let appendResult = $$.omit(options, "pipes");
     result = { ...result, ...appendResult };
     return result;
 };
 
-export const compare: Fitting = async (...args) => {
+export const compare: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    const result: FittingResult = {};
+    const result: PipeResult = {};
     result.status = $$.getKeyBool(options, "initialStatus");
     result.response = [];
     if ($$.hasKeyFunc(options, "reducer")) {
@@ -43,70 +41,68 @@ export const compare: Fitting = async (...args) => {
     return result;
 };
 
-export const ifElse: Fitting = async (...args) => {
+export const ifElse: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    const [condition, nextFitting]: [boolean, number] = await getExpOrStatus(
+    const [condition, nextPipe]: [boolean, number] = await getExpOrStatus(
         options,
         stream
     );
     const result = condition
-        ? await getSubResult(options, stream, nextFitting)
-        : await getSubResult(options, stream, nextFitting + 1);
+        ? await getSubResult(options, stream, nextPipe)
+        : await getSubResult(options, stream, nextPipe + 1);
     return result;
 };
 
-export const not: Fitting = async (...args) => {
+export const not: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result = await getSubResult(options, stream);
     result.status = !result.status;
     return result;
 };
 
-export const or: Fitting = async (...args) => {
+export const or: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     options.initialStatus = false;
     options.reducer = (acc: boolean, curr: boolean) => acc || curr;
-    options.responseFilter = (
-        result: FittingResult,
-        subResult: FittingResult
-    ) => result?.status === subResult?.status;
-    const result: FittingResult = await compare(options, stream);
+    options.responseFilter = (result: PipeResult, subResult: PipeResult) =>
+        result?.status === subResult?.status;
+    const result: PipeResult = await compare(options, stream);
     return result;
 };
 
-export const returnFalse: Fitting = async (...args) => {
+export const returnFalse: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     result.status = false;
     addOptionResponse(options, result);
     return result;
 };
 
-export const returnTrue: Fitting = async (...args) => {
+export const returnTrue: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     result.status = true;
     addOptionResponse(options, result);
     return result;
 };
 
-export const setStore: Fitting = (...args) => {
+export const setStore: Pipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     result.status = true;
     return result;
 };
 
-export const switchBlock: Fitting = async (...args) => {
+export const switchBlock: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const exp = await getExpOrResponse(options, stream);
     const cases = getOptionCases(options);
-    const result: FittingResult = await then(
+    const result: PipeResult = await then(
         {
-            fittings: [
+            pipes: [
                 switchExp.bind(null, { exp }),
-                ...cases.map(([value, fitting]) =>
-                    switchCaseBreak.bind(null, { value, fitting })
+                ...cases.map(([value, pipe]) =>
+                    switchCaseBreak.bind(null, { value, pipe })
                 ),
                 switchDefault.bind(null, options.default),
             ],
@@ -116,18 +112,18 @@ export const switchBlock: Fitting = async (...args) => {
     return result;
 };
 
-export const switchBreak: Fitting = async (...args) => {
+export const switchBreak: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     result.status = true;
     if ($$.hasKey(stream, "switchExp")) stream.switchExp = undefined;
     if ($$.hasKey(stream, "switchMatched")) stream.switchMatched = undefined;
     return result;
 };
 
-export const switchCase: Fitting = async (...args) => {
+export const switchCase: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     result.status = true;
     if (stream.switchExp === options.value || stream.switchMatched) {
         result = await getSubResult(options, stream);
@@ -136,9 +132,9 @@ export const switchCase: Fitting = async (...args) => {
     return result;
 };
 
-export const switchCaseBreak: Fitting = async (...args) => {
+export const switchCaseBreak: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     result.status = true;
     if (stream.switchExp === options.value || stream.switchMatched) {
         result = await getSubResult(options, stream);
@@ -148,9 +144,9 @@ export const switchCaseBreak: Fitting = async (...args) => {
     return result;
 };
 
-export const switchDefault: Fitting = async (...args) => {
+export const switchDefault: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     result.status = true;
     if ($$.hasKey(stream, "switchExp") && stream.switchMatched === false) {
         result = await getSubResult(options, stream);
@@ -159,9 +155,9 @@ export const switchDefault: Fitting = async (...args) => {
     return result;
 };
 
-export const switchExp: Fitting = async (...args) => {
+export const switchExp: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     const [exp] = await getExpOrResponse(options, stream);
     if (exp) stream.switchExp = exp;
     stream.switchMatched = false;
@@ -169,12 +165,12 @@ export const switchExp: Fitting = async (...args) => {
     return result;
 };
 
-export const then: Fitting = async (...args) => {
+export const then: Pipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
-    let result: FittingResult = {};
+    let result: PipeResult = {};
     result.status = true;
     let i = 0;
-    while ($$.getKeyArr(options, "fittings", false)) {
+    while ($$.getKeyArr(options, "pipes", false)) {
         if (!result.status) break;
         result = await getSubResult(options, stream, i);
         i++;

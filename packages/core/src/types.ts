@@ -1,28 +1,26 @@
-export type BoundFitting = (
-    stream: Stream
-) => FittingResult | Promise<FittingResult>;
+export type BoundPipe = (stream: Stream) => PipeResult | Promise<PipeResult>;
 
-export type Fitting = {
-    bind: (this: any, thisArg: any, options: GenericOptions) => BoundFitting;
-} & ((...args: FittingArgs) => FittingResult | Promise<FittingResult>);
+export type Pipe = {
+    bind: (this: any, thisArg: any, options: GenericOptions) => BoundPipe;
+} & ((...args: PipeArgs) => PipeResult | Promise<PipeResult>);
 
-export type FittingAlt = FittingToBeBound | string;
+export type PipeAlt = PipeToBeBound | string;
 
-export type FittingArgs = [Stream] | [GenericOptions, Stream];
+export type PipeArgs = [Stream] | [GenericOptions, Stream];
 
-export type FittingResult = {
+export type PipeResult = {
     status?: boolean;
     response?: any;
 };
 
-export type FittingStore = { [key: string]: Fitting };
+export type PipeStore = { [key: string]: Pipe };
 
-export type FittingSubResultFilter = (
-    result: FittingResult,
-    subResult: FittingResult
+export type PipeSubResultFilter = (
+    result: PipeResult,
+    subResult: PipeResult
 ) => boolean;
 
-export type FittingToBeBound = [Fitting | string, GenericOptions];
+export type PipeToBeBound = [Pipe | string, GenericOptions];
 
 export type GenericOptions =
     | Options
@@ -36,7 +34,7 @@ export type Options = {
     [key: string]: any;
 };
 
-export type OptionsAlt = Fitting | FittingAlt;
+export type OptionsAlt = Pipe | PipeAlt;
 
 export type OptionsResolver = (stream: Stream) => Options | OptionsAlt;
 
