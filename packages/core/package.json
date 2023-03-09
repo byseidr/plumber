@@ -1,0 +1,31 @@
+{
+    "name": "@plumber/core",
+    "version": "0.0.0",
+    "description": "Logic plumbing functions for your JavaScript data.",
+    "author": "Seidr <seidr@byseidr.com>",
+    "homepage": "",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:byseidr/plumber.git"
+    },
+    "license": "MIT",
+    "keywords": [
+        "functions",
+        "data",
+        "logic",
+        "plumbing"
+    ],
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "directories": {
+        "dist": "dist",
+        "test": "__tests__"
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "tsc": "tsc",
+        "test": "node ./__tests__/core.test.js"
+    }
+}

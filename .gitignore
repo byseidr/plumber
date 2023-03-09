@@ -1,6 +1,7 @@
 node_modules
 build
 npm-debug.log
+lerna-debug.log
 .env
 .DS_Store
-dist
+packages/*/dist
