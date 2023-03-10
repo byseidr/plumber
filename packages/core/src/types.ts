@@ -1,5 +1,3 @@
-export type BoundPipe = (stream: Stream) => PipeResult | Promise<PipeResult>;
-
 export interface Pipe<T extends WithStream | WithOptionsAndStream> {
     (...args: T): PipeResult | Promise<PipeResult>;
     bind: (
