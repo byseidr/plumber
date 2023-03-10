@@ -41,6 +41,8 @@ export type GenericPipe =
 export type GenericStream = Stream | StreamResolver;
 
 export type Options = {
+    [pipe in "pipe" | "pipes"]?: OptionsPipe | OptionsPipe[];
+} & {
     [key: string]: any;
 };
 
