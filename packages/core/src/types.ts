@@ -9,6 +9,10 @@ export interface Pipe<T extends WithStream | WithOptionsAndStream> {
 
 export type PipeAlt = PipeToBeBound | string;
 
+export type BindablePipe = DynamicPipe | Pipe<WithOptionsAndStream>;
+
+export type CallablePipe = DynamicPipe | Pipe<WithStream>;
+
 export type DynamicPipe = Pipe<WithStream | WithOptionsAndStream>;
 
 export type PipeResult = {
