@@ -20,7 +20,7 @@ export type PipeResult = {
     response?: any;
 };
 
-export type PipeStore = { [key: string]: Pipe };
+export type PipeStore = { [key: string]: GenericPipe };
 
 export type PipeSubResultFilter = (
     result: PipeResult,
