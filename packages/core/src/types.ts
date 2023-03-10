@@ -31,6 +31,11 @@ export type GenericOptions =
     | OptionsAlt[]
     | OptionsResolver;
 
+export type GenericPipe =
+    | DynamicPipe
+    | Pipe<WithStream>
+    | Pipe<WithOptionsAndStream>;
+
 export type GenericStream = Stream | StreamResolver;
 
 export type Options = {
