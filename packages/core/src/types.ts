@@ -44,7 +44,7 @@ export type Options = {
     [key: string]: any;
 };
 
-export type OptionsAlt = Pipe | PipeToBeBound | string;
+export type OptionsAlt = CallablePipe | PipeToBeBound | string;
 
 export type OptionsResolver = (stream: Stream) => Options | OptionsAlt;
 
