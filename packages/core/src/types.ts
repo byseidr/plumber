@@ -29,8 +29,8 @@ export type PipeToBeBound = [BindablePipe | string, Options];
 
 export type GenericOptions =
     | Options
-    | OptionsAlt
-    | OptionsAlt[]
+    | OptionsPipe
+    | OptionsPipe[]
     | OptionsResolver;
 
 export type GenericPipe =
@@ -44,9 +44,9 @@ export type Options = {
     [key: string]: any;
 };
 
-export type OptionsAlt = CallablePipe | PipeToBeBound | string;
+export type OptionsPipe = CallablePipe | PipeToBeBound | string;
 
-export type OptionsResolver = (stream: Stream) => Options | OptionsAlt;
+export type OptionsResolver = (stream: Stream) => Options | OptionsPipe;
 
 export type Stream = { [key: string]: any };
 
