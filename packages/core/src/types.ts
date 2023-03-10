@@ -11,8 +11,6 @@ export interface Pipe<T extends WithStream | WithOptionsAndStream> {
 
 export type PipeAlt = PipeToBeBound | string;
 
-export type PipeArgs = [Stream] | [GenericOptions, Stream];
-
 export type PipeResult = {
     status?: boolean;
     response?: any;
