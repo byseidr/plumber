@@ -1,8 +1,13 @@
 export type BoundPipe = (stream: Stream) => PipeResult | Promise<PipeResult>;
 
-export type Pipe = {
-    bind: (this: any, thisArg: any, options: GenericOptions) => BoundPipe;
-} & ((...args: PipeArgs) => PipeResult | Promise<PipeResult>);
+export interface Pipe<T extends WithStream | WithOptionsAndStream> {
+    (...args: T): PipeResult | Promise<PipeResult>;
+    bind: (
+        this: any,
+        thisArg: any,
+        options?: GenericOptions
+    ) => Pipe<WithStream>;
+}
 
 export type PipeAlt = PipeToBeBound | string;
 
@@ -41,3 +46,7 @@ export type OptionsResolver = (stream: Stream) => Options | OptionsAlt;
 export type Stream = { [key: string]: any };
 
 export type StreamResolver = (options: Options) => Stream;
+
+export type WithStream = [Stream?];
+
+export type WithOptionsAndStream = [GenericOptions, Stream?];
