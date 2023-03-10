@@ -7,8 +7,6 @@ export interface Pipe<T extends WithStream | WithOptionsAndStream> {
     ) => Pipe<WithStream>;
 }
 
-export type PipeAlt = PipeToBeBound | string;
-
 export type BindablePipe = DynamicPipe | Pipe<WithOptionsAndStream>;
 
 export type CallablePipe = DynamicPipe | Pipe<WithStream>;
@@ -46,7 +44,7 @@ export type Options = {
     [key: string]: any;
 };
 
-export type OptionsAlt = Pipe | PipeAlt;
+export type OptionsAlt = Pipe | PipeToBeBound | string;
 
 export type OptionsResolver = (stream: Stream) => Options | OptionsAlt;
 
