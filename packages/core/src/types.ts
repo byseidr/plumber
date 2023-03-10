@@ -25,7 +25,7 @@ export type PipeSubResultFilter = (
     subResult: PipeResult
 ) => boolean;
 
-export type PipeToBeBound = [Pipe | string, GenericOptions];
+export type PipeToBeBound = [Pipe | string, Options];
 
 export type GenericOptions =
     | Options
