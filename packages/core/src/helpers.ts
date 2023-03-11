@@ -124,7 +124,7 @@ export const getExpOrStatus = async (
 };
 
 export const getFormattedArgs = (args: PipeArgs, defaultStore: PipeStore) => {
-    let options = args.length > 1 ? args[0] : {};
+    let options = <GenericOptions>(args.length > 1 ? args[0] : {});
     let stream = <Stream>(args.length > 1 ? args[1] : args[0]);
     options = getFormattedOptions(options, stream);
     stream = getFormattedStream(options, stream, defaultStore);
