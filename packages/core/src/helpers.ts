@@ -83,7 +83,7 @@ export const getBoundPipe = (
 ): CallablePipe | string => {
     const pipe = <BindablePipe | string>getStorePipe(pipeTuple[0], stream);
     if ($$.isFunc(pipe) && pipeTuple?.[1])
-        return (<BindablePipe>pipe).bind(null, pipeTuple[1]);
+        return getCallablePipe(<BindablePipe>pipe, pipeTuple[1]);
     return <string>pipe;
 };
 
