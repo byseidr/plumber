@@ -1,4 +1,4 @@
-export interface Pipe<T extends WithStream | WithOptionsAndStream> {
+export interface Pipe<T extends PipeArgs> {
     (...args: T): PipeResult | Promise<PipeResult>;
     bind: (
         this: any,
@@ -11,7 +11,9 @@ export type BindablePipe = DynamicPipe | Pipe<WithOptionsAndStream>;
 
 export type CallablePipe = DynamicPipe | Pipe<WithStream>;
 
-export type DynamicPipe = Pipe<WithStream | WithOptionsAndStream>;
+export type DynamicPipe = Pipe<PipeArgs>;
+
+export type PipeArgs = WithStream | WithOptionsAndStream;
 
 export type PipeResult = {
     status?: boolean;
