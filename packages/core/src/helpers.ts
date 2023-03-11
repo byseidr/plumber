@@ -10,9 +10,8 @@ import {
     Stream,
     StreamResolver,
     GenericOptions,
+    OptionsPipe,
     OptionsResolver,
-    OptionsAlt,
-    PipeAlt,
     PipeToBeBound,
     GenericStream,
     GenericPipe,
@@ -120,7 +119,7 @@ export const getFormattedArgs = (args: PipeArgs, defaultStore: PipeStore) => {
     return { options, stream };
 };
 
-export const getFormattedPipe = (pipe: Pipe | PipeAlt, stream: Stream) =>
+export const getFormattedPipe = (pipe: OptionsPipe, stream: Stream) =>
     $$.isArr(pipe)
         ? <Pipe>getBoundPipe(<PipeToBeBound>pipe, stream)
         : getStorePipe(<Pipe | string>pipe, stream);
@@ -142,9 +141,7 @@ export const getFormattedOptions = (
 ) => {
     if ($$.isFunc(options)) options = (<OptionsResolver>options)(stream);
     if (!$$.isObj(options))
-        options = {
-            pipes: <Exclude<OptionsAlt, OptionsResolver>>options,
-        };
+        options = { pipes: <OptionsPipe | OptionsPipe[]>options };
     options = getMergedPipes(<Options>options);
     options = getFormattedPipes(<Options>options, stream);
     return options;
