@@ -15,6 +15,8 @@ import {
     PipeToBeBound,
     GenericStream,
     GenericPipe,
+    BindablePipe,
+    CallablePipe,
 } from "./types";
 
 export const addOptionResponse = (options: Options, result: PipeResult) => {
@@ -75,10 +77,14 @@ export const filterSubResult = (
     subResult: PipeResult
 ) => filter?.(result, subResult) ?? true;
 
-export const getBoundPipe = (pipe: PipeToBeBound, stream: Stream) => {
-    pipe[0] = getStorePipe(pipe[0], stream);
-    if ($$.isFunc(pipe?.[0]) && pipe?.[1]) return pipe[0].bind(null, pipe[1]);
-    return pipe[0];
+export const getBoundPipe = (
+    pipeTuple: PipeToBeBound,
+    stream: Stream
+): CallablePipe | string => {
+    const pipe = <BindablePipe | string>getStorePipe(pipeTuple[0], stream);
+    if ($$.isFunc(pipe) && pipeTuple?.[1])
+        return (<BindablePipe>pipe).bind(null, pipeTuple[1]);
+    return <string>pipe;
 };
 
 export const getExp = async (
@@ -121,7 +127,7 @@ export const getFormattedArgs = (args: PipeArgs, defaultStore: PipeStore) => {
 
 export const getFormattedPipe = (pipe: OptionsPipe, stream: Stream) =>
     $$.isArr(pipe)
-        ? <Pipe>getBoundPipe(<PipeToBeBound>pipe, stream)
+        ? getBoundPipe(<PipeToBeBound>pipe, stream)
         : getStorePipe(<Pipe | string>pipe, stream);
 
 export const getFormattedPipes = (options: Options, stream: Stream) => {
