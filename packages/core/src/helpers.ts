@@ -128,7 +128,7 @@ export const getFormattedArgs = (args: PipeArgs, defaultStore: PipeStore) => {
 export const getFormattedPipe = (pipe: OptionsPipe, stream: Stream) =>
     $$.isArr(pipe)
         ? getBoundPipe(<PipeToBeBound>pipe, stream)
-        : getStorePipe(<Pipe | string>pipe, stream);
+        : getStorePipe(<CallablePipe | string>pipe, stream);
 
 export const getFormattedPipes = (options: Options, stream: Stream) => {
     if (options.pipes) {
@@ -219,7 +219,7 @@ export const getSubResult = async (
         options.pipes!.length < index + 1
     )
         return result;
-    const subResult = await options.pipes[index](stream);
+    const subResult = await (<CallablePipe[]>options.pipes)[index](stream);
     addSubStatus(options, result, subResult);
     addSubResponse(options, result, subResult);
     addOptionResponse(options, result);
