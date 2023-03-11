@@ -197,7 +197,7 @@ export const getStatus = (result: PipeResult) =>
 export const getStorePipe = (
     pipe: GenericPipe | string,
     stream: Stream
-): GenericPipe =>
+): GenericPipe | string =>
     $$.isStr(pipe) ? stream?.store?.[<string>pipe] ?? pipe : pipe;
 
 export const getSubResult = async (
