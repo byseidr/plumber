@@ -3,9 +3,9 @@ import {
     addOptionResponse,
     getFormattedArgs,
 } from "@plumber/core/dist/helpers";
-import { Pipe, PipeResult } from "@plumber/core/dist/types";
+import { DynamicPipe, PipeResult } from "@plumber/core/dist/types";
 
-export const setArr: Pipe = (...args) => {
+export const setArr: DynamicPipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -19,7 +19,7 @@ export const setArr: Pipe = (...args) => {
     return result;
 };
 
-export const setBool: Pipe = (...args) => {
+export const setBool: DynamicPipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -33,7 +33,7 @@ export const setBool: Pipe = (...args) => {
     return result;
 };
 
-export const setNum: Pipe = (...args) => {
+export const setNum: DynamicPipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -47,7 +47,7 @@ export const setNum: Pipe = (...args) => {
     return result;
 };
 
-export const setObj: Pipe = (...args) => {
+export const setObj: DynamicPipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -61,7 +61,7 @@ export const setObj: Pipe = (...args) => {
     return result;
 };
 
-export const setStr: Pipe = (...args) => {
+export const setStr: DynamicPipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -75,7 +75,7 @@ export const setStr: Pipe = (...args) => {
     return result;
 };
 
-export const setTime: Pipe = (...args) => {
+export const setTime: DynamicPipe = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name } = options;
