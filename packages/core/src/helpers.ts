@@ -87,6 +87,11 @@ export const getBoundPipe = (
     return <string>pipe;
 };
 
+export const getCallablePipe = (
+    pipe: BindablePipe,
+    options: GenericOptions = {}
+) => pipe.bind(null, options);
+
 export const getExp = async (
     options: Options,
     stream: Stream
