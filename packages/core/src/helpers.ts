@@ -14,6 +14,7 @@ import {
     OptionsResolver,
     PipeToBeBound,
     GenericStream,
+    WithOptionsAndStream,
     GenericPipe,
     BindablePipe,
     CallablePipe,
@@ -130,17 +131,29 @@ export const getFormattedArgs = (args: PipeArgs, defaultStore: PipeStore) => {
     return { options, stream };
 };
 
-export const getFormattedPipe = (pipe: OptionsPipe, stream: Stream) =>
-    $$.isArr(pipe)
+export const getFormattedPipe = (
+    pipe: OptionsPipe,
+    stream: Stream
+): CallablePipe | undefined => {
+    const formattedPipe = $$.isArr(pipe)
         ? getBoundPipe(<PipeToBeBound>pipe, stream)
         : getStorePipe(<CallablePipe | string>pipe, stream);
+    if ($$.isStr(formattedPipe)) return;
+    if (formattedPipe.length > 1)
+        return getCallablePipe(<Pipe<WithOptionsAndStream>>formattedPipe);
+    return <CallablePipe>formattedPipe;
+};
 
 export const getFormattedPipes = (options: Options, stream: Stream) => {
     if (options.pipes) {
         const pipes = $$.toArr(options.pipes);
         options = {
             ...options,
-            pipes: pipes.map((pipe) => getFormattedPipe(pipe, stream)),
+            pipes: <CallablePipe[]>(
+                pipes
+                    .map((pipe) => getFormattedPipe(pipe, stream))
+                    .filter(Boolean)
+            ),
         };
     }
     return options;
