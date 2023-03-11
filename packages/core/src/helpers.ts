@@ -15,6 +15,7 @@ import {
     PipeAlt,
     PipeToBeBound,
     GenericStream,
+    GenericPipe,
 } from "./types";
 
 export const addOptionResponse = (options: Options, result: PipeResult) => {
@@ -173,7 +174,7 @@ export const getMergedPipes = (options: Options) => {
 };
 
 export const getOptionCases = (options: Options) => {
-    const result: [any?, Pipe?] = [];
+    const result: [any?, GenericPipe?] = [];
     if (options?.cases) {
         result.push(...options.cases);
         return result;
@@ -196,7 +197,10 @@ export const getOptionExp = async (
 export const getStatus = (result: PipeResult) =>
     $$.hasKeyBool(result, "status") ? result.status : !!result.status;
 
-export const getStorePipe = (pipe: Pipe | string, stream: Stream): Pipe =>
+export const getStorePipe = (
+    pipe: GenericPipe | string,
+    stream: Stream
+): GenericPipe =>
     $$.isStr(pipe) ? stream?.store?.[<string>pipe] ?? pipe : pipe;
 
 export const getSubResult = async (
