@@ -162,11 +162,9 @@ export const then: DynamicPipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
-    let i = 0;
-    while (i < $$.getKeyArr(options, "pipes").length) {
+    for (let i = 0; i < $$.getKeyArr(options, "pipes").length; i++) {
         if (!result.status) break;
         result = await getSubResult(options, stream, i);
-        i++;
     }
     return result;
 };
