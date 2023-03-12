@@ -76,7 +76,9 @@ export type OptionsPipe = CallablePipe | PipeToBeBound | string;
 
 export type OptionsResolver = (stream: Stream) => Options | OptionsPipe;
 
-export type Stream = { [key: string]: any };
+export type Stream = { [K in keyof StreamBase]?: StreamBase[K] } & {
+    [key: string]: any;
+};
 
 export type StreamResolver = (options: Options) => Stream;
 
