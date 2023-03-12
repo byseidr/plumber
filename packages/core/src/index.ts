@@ -106,7 +106,7 @@ export const switchBlock: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const switchBreak: DynamicPipe = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
     if ($$.hasKey(stream, "switchExp")) stream.switchExp = undefined;
