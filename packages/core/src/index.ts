@@ -163,7 +163,7 @@ export const then: DynamicPipe = async (...args) => {
     let result: PipeResult = {};
     result.status = true;
     let i = 0;
-    while ($$.getKeyArr(options, "pipes", false)) {
+    while (i < $$.getKeyArr(options, "pipes").length) {
         if (!result.status) break;
         result = await getSubResult(options, stream, i);
         i++;
