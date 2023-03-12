@@ -9,9 +9,9 @@ import {
     getOptionCases,
     getSubResult,
 } from "./helpers";
-import { DynamicPipe, PipeResult } from "./types";
+import { DynamicPipe, Pipe, PipeResult, WithOptionsAndStream } from "./types";
 
-export const and: DynamicPipe = async (...args) => {
+export const and: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     options.initialStatus = true;
     options.reducer = (acc: boolean, curr: boolean) => acc && curr;
@@ -21,7 +21,7 @@ export const and: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const append: DynamicPipe = async (...args) => {
+export const append: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result = await getSubResult(options, stream);
     let appendResult = $$.omit(options, "pipes");
@@ -29,7 +29,7 @@ export const append: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const compare: DynamicPipe = async (...args) => {
+export const compare: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     result.status = $$.getKeyBool(options, "initialStatus");
@@ -41,7 +41,7 @@ export const compare: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const ifElse: DynamicPipe = async (...args) => {
+export const ifElse: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const [condition, nextPipe]: [boolean, number] = await getExpOrStatus(
         options,
@@ -53,14 +53,14 @@ export const ifElse: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const not: DynamicPipe = async (...args) => {
+export const not: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result = await getSubResult(options, stream);
     result.status = !result.status;
     return result;
 };
 
-export const or: DynamicPipe = async (...args) => {
+export const or: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     options.initialStatus = false;
     options.reducer = (acc: boolean, curr: boolean) => acc || curr;
@@ -70,7 +70,7 @@ export const or: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const returnFalse: DynamicPipe = async (...args) => {
+export const returnFalse: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = false;
@@ -78,7 +78,7 @@ export const returnFalse: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const returnTrue: DynamicPipe = async (...args) => {
+export const returnTrue: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
@@ -86,7 +86,7 @@ export const returnTrue: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const switchBlock: DynamicPipe = async (...args) => {
+export const switchBlock: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const exp = await getExpOrResponse(options, stream);
     const cases = getOptionCases(options);
@@ -114,7 +114,7 @@ export const switchBreak: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const switchCase: DynamicPipe = async (...args) => {
+export const switchCase: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
@@ -125,7 +125,7 @@ export const switchCase: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const switchCaseBreak: DynamicPipe = async (...args) => {
+export const switchCaseBreak: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
@@ -137,7 +137,7 @@ export const switchCaseBreak: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const switchDefault: DynamicPipe = async (...args) => {
+export const switchDefault: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
@@ -148,7 +148,7 @@ export const switchDefault: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const switchExp: DynamicPipe = async (...args) => {
+export const switchExp: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     const [exp] = await getExpOrResponse(options, stream);
@@ -158,7 +158,7 @@ export const switchExp: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const then: DynamicPipe = async (...args) => {
+export const then: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;

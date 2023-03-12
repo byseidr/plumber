@@ -3,9 +3,13 @@ import {
     addOptionResponse,
     getFormattedArgs,
 } from "@plumber/core/dist/helpers";
-import { DynamicPipe, PipeResult } from "@plumber/core/dist/types";
+import {
+    Pipe,
+    PipeResult,
+    WithOptionsAndStream,
+} from "@plumber/core/dist/types";
 
-export const setArr: DynamicPipe = (...args) => {
+export const setArr: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -19,7 +23,7 @@ export const setArr: DynamicPipe = (...args) => {
     return result;
 };
 
-export const setBool: DynamicPipe = (...args) => {
+export const setBool: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -33,7 +37,7 @@ export const setBool: DynamicPipe = (...args) => {
     return result;
 };
 
-export const setNum: DynamicPipe = (...args) => {
+export const setNum: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -47,7 +51,7 @@ export const setNum: DynamicPipe = (...args) => {
     return result;
 };
 
-export const setObj: DynamicPipe = (...args) => {
+export const setObj: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -61,7 +65,7 @@ export const setObj: DynamicPipe = (...args) => {
     return result;
 };
 
-export const setStr: DynamicPipe = (...args) => {
+export const setStr: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
@@ -75,7 +79,7 @@ export const setStr: DynamicPipe = (...args) => {
     return result;
 };
 
-export const setTime: DynamicPipe = (...args) => {
+export const setTime: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name } = options;
