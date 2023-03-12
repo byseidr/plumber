@@ -86,13 +86,6 @@ export const returnTrue: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const setStore: DynamicPipe = (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
-    let result: PipeResult = {};
-    result.status = true;
-    return result;
-};
-
 export const switchBlock: DynamicPipe = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const exp = await getExpOrResponse(options, stream);
