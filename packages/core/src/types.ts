@@ -1,3 +1,29 @@
+export interface OptionsBase {
+    [key: `case${number}`]: [any, CallablePipe];
+    cases?: [any, CallablePipe][];
+    default?: CallablePipe;
+    disableResultPropagation?: boolean;
+    exp?: any;
+    expression?: this["exp"];
+    initialStatus?: boolean;
+    pipe?: OptionsPipe | OptionsPipe[];
+    pipes?: this["pipe"];
+    reducer?: (acc: any, curr: any) => any;
+    response?: any;
+    responseFilter?: (result: PipeResult, subResult: PipeResult) => boolean;
+    store?: PipeStore;
+    value?: any;
+}
+
+export interface StreamBase {
+    data?: { [key: string]: any };
+    response?: any;
+    status?: boolean;
+    store?: PipeStore;
+    switchExp?: OptionsBase["exp"];
+    switchMatched?: boolean;
+}
+
 export interface Pipe<T extends PipeArgs> {
     (...args: T): PipeResult | Promise<PipeResult>;
     bind: (
