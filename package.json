@@ -1,4 +1,5 @@
 {
+    "name": "plumber",
     "dependencies": {
         "richierich": "^7.6.0"
     },
