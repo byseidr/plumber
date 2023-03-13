@@ -6,6 +6,7 @@ export interface OptionsBase {
     exp?: any;
     expression?: this["exp"];
     initialStatus?: boolean;
+    locale?: string;
     pipe?: OptionsPipe | OptionsPipe[];
     pipes?: this["pipe"];
     reducer?: (acc: any, curr: any) => any;
@@ -13,6 +14,7 @@ export interface OptionsBase {
     responseFilter?: (result: PipeResult, subResult: PipeResult) => boolean;
     store?: PipeStore;
     value?: any;
+    zone?: string;
 }
 
 export interface StreamBase {
