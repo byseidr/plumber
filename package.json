@@ -1,7 +1,7 @@
 {
     "name": "plumber",
     "dependencies": {
-        "richierich": "^7.6.0"
+        "richierich": "^7.14.0"
     },
     "devDependencies": {
         "@commitlint/cli": "^17.4.4",
