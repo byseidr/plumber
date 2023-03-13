@@ -8,6 +8,7 @@ import {
     PipeResult,
     WithOptionsAndStream,
 } from "@plumber/core/dist/types";
+import { dateObjToStr } from "./helpers";
 
 export const setArr: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
@@ -82,9 +83,13 @@ export const setStr: Pipe<WithOptionsAndStream> = (...args) => {
 export const setTime: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
-    const { name } = options;
+    let { name, value } = options;
     if (name) {
-        (stream.data ??= {})[name] = $$.nowInS();
+        if ($$.isObj(value) && $$.hasKeys(value, ["year", "month", "day"]))
+            value = dateObjToStr(value);
+        (stream.data ??= {})[name] = value
+            ? new Date(value).getTime()
+            : $$.nowInS();
         result.status = true;
     } else {
         result.status = false;
