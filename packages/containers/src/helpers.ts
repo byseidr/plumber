@@ -1,4 +1,4 @@
-import * as $$ from "richierich";
+import { isStr } from "richierich";
 import {
     DateObjectUnits,
     DateTime,
@@ -10,7 +10,7 @@ export const formatDateTime = (
     dateTime: string | DateObjectUnits,
     options?: DateTimeOptions | DateTimeJSOptions
 ) => {
-    const formattedDateTime = $$.isStr(dateTime)
+    const formattedDateTime = isStr(dateTime)
         ? DateTime.fromFormat(
               parseDateTimeStr(<string>dateTime),
               "D TT",

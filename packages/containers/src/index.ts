@@ -1,8 +1,8 @@
-import * as $$ from "richierich";
 import {
     addOptionResponse,
     getFormattedArgs,
 } from "@plumber/core/dist/helpers";
+import { isArr, isBool, isNum, isObj, isStr, nowInS } from "richierich";
 import {
     Pipe,
     PipeResult,
@@ -15,7 +15,7 @@ export const setArr: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
-    if (name && $$.isArr(value) && value.length) {
+    if (name && isArr(value) && value.length) {
         (stream.data ??= {})[name] = value;
         result.status = true;
     } else {
@@ -29,7 +29,7 @@ export const setBool: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
-    if (name && $$.isBool(value)) {
+    if (name && isBool(value)) {
         (stream.data ??= {})[name] = value;
         result.status = true;
     } else {
@@ -43,7 +43,7 @@ export const setNum: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
-    if (name && $$.isNum(value)) {
+    if (name && isNum(value)) {
         (stream.data ??= {})[name] = value;
         result.status = true;
     } else {
@@ -57,7 +57,7 @@ export const setObj: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
-    if (name && $$.isObj(value)) {
+    if (name && isObj(value)) {
         (stream.data ??= {})[name] = value;
         result.status = true;
     } else {
@@ -71,7 +71,7 @@ export const setStr: Pipe<WithOptionsAndStream> = (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
     const { name, optional, value } = options;
-    if (name && $$.isStr(value) && value) {
+    if (name && isStr(value) && value) {
         (stream.data ??= {})[name] = value;
         result.status = true;
     } else {
@@ -87,9 +87,9 @@ export const setTime: Pipe<WithOptionsAndStream> = (...args) => {
     let { name, value, zone, locale } = options;
     if (name) {
         (stream.data ??= {})[name] =
-            $$.isStr(value) || $$.isObj(value)
+            isStr(value) || isObj(value)
                 ? formatDateTime(value, { zone, locale })
-                : $$.nowInS();
+                : nowInS();
         result.status = true;
     } else {
         result.status = false;

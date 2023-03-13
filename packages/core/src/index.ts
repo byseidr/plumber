@@ -1,4 +1,4 @@
-import * as $$ from "richierich";
+import { getKeyArr, getKeyBool, hasKey, hasKeyFunc, omit } from "richierich";
 
 import {
     addOptionResponse,
@@ -24,7 +24,7 @@ export const and: Pipe<WithOptionsAndStream> = async (...args) => {
 export const append: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result = await getSubResult(options, stream);
-    let appendResult = $$.omit(options, "pipes");
+    let appendResult = omit(options, "pipes");
     result = { ...result, ...appendResult };
     return result;
 };
@@ -32,9 +32,9 @@ export const append: Pipe<WithOptionsAndStream> = async (...args) => {
 export const compare: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     const result: PipeResult = {};
-    result.status = $$.getKeyBool(options, "initialStatus");
+    result.status = getKeyBool(options, "initialStatus");
     result.response = [];
-    if ($$.hasKeyFunc(options, "reducer")) {
+    if (hasKeyFunc(options, "reducer")) {
         await addSubResults(options, stream, result);
     }
     addOptionResponse(options, result);
@@ -109,8 +109,8 @@ export const switchBreak: DynamicPipe = async (...args) => {
     const { stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
-    if ($$.hasKey(stream, "switchExp")) stream.switchExp = undefined;
-    if ($$.hasKey(stream, "switchMatched")) stream.switchMatched = undefined;
+    if (hasKey(stream, "switchExp")) stream.switchExp = undefined;
+    if (hasKey(stream, "switchMatched")) stream.switchMatched = undefined;
     return result;
 };
 
@@ -141,7 +141,7 @@ export const switchDefault: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
-    if ($$.hasKey(stream, "switchExp") && stream.switchMatched === false) {
+    if (hasKey(stream, "switchExp") && stream.switchMatched === false) {
         result = await getSubResult(options, stream);
         await switchBreak(stream);
     }
@@ -154,7 +154,7 @@ export const switchExp: Pipe<WithOptionsAndStream> = async (...args) => {
     const [exp] = await getExpOrResponse(options, stream);
     if (exp) stream.switchExp = exp;
     stream.switchMatched = false;
-    result.status = $$.hasKey(stream, "switchExp");
+    result.status = hasKey(stream, "switchExp");
     return result;
 };
 
@@ -162,7 +162,7 @@ export const then: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
     let result: PipeResult = {};
     result.status = true;
-    for (let i = 0; i < $$.getKeyArr(options, "pipes").length; i++) {
+    for (let i = 0; i < getKeyArr(options, "pipes").length; i++) {
         if (!result.status) break;
         result = await getSubResult(options, stream, i);
     }

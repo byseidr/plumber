@@ -1,4 +1,18 @@
-import * as $$ from "richierich";
+import {
+    getFunc,
+    getKeyArr,
+    getSortedKeys,
+    hasKey,
+    hasKeyBool,
+    isArr,
+    isEmpty,
+    isFunc,
+    isFuncArr,
+    isObj,
+    isStr,
+    omit,
+    toArr,
+} from "richierich";
 
 import {
     Pipe,
@@ -21,13 +35,13 @@ import {
 } from "./types";
 
 export const addOptionResponse = (options: Options, result: PipeResult) => {
-    if (!$$.hasKey(options, "response") || $$.isEmpty(options.response)) return;
-    result.response = $$.getFunc(options.response, result.status);
+    if (!hasKey(options, "response") || isEmpty(options.response)) return;
+    result.response = getFunc(options.response, result.status);
 };
 
 export const addStreamResult = (stream: Stream, result: PipeResult) => {
-    if ($$.hasKey(result, "status")) stream.status = result.status;
-    if ($$.hasKey(result, "response")) stream.response = result.response;
+    if (hasKey(result, "status")) stream.status = result.status;
+    if (hasKey(result, "response")) stream.response = result.response;
 };
 
 export const addSubResponse = (
@@ -36,11 +50,11 @@ export const addSubResponse = (
     subResult: PipeResult
 ): void => {
     if (
-        !$$.hasKey(options, "response") &&
+        !hasKey(options, "response") &&
         hasResponse(subResult) &&
         filterSubResult(options?.responseFilter, result, subResult)
     ) {
-        (result.response ??= []).push(...$$.toArr(subResult.response));
+        (result.response ??= []).push(...toArr(subResult.response));
     }
 };
 
@@ -50,7 +64,7 @@ export const addSubResults = async (
     result: PipeResult
 ): Promise<void> => {
     const subResults: PipeResult[] = [];
-    for (let pipe of $$.getKeyArr(options, "pipes")) {
+    for (let pipe of getKeyArr(options, "pipes")) {
         const subResult = await pipe(stream);
         addSubStatus(options, result, subResult);
         subResults.push(subResult);
@@ -83,7 +97,7 @@ export const getBoundPipe = (
     stream: Stream
 ): CallablePipe | string => {
     const pipe = <BindablePipe | string>getStorePipe(pipeTuple[0], stream);
-    if ($$.isFunc(pipe) && pipeTuple?.[1])
+    if (isFunc(pipe) && pipeTuple?.[1])
         return getCallablePipe(<BindablePipe>pipe, pipeTuple[1]);
     return <string>pipe;
 };
@@ -135,10 +149,10 @@ export const getFormattedPipe = (
     pipe: OptionsPipe,
     stream: Stream
 ): CallablePipe | undefined => {
-    const formattedPipe = $$.isArr(pipe)
+    const formattedPipe = isArr(pipe)
         ? getBoundPipe(<PipeToBeBound>pipe, stream)
         : getStorePipe(<CallablePipe | string>pipe, stream);
-    if ($$.isStr(formattedPipe)) return;
+    if (isStr(formattedPipe)) return;
     if (formattedPipe.length > 1)
         return getCallablePipe(<Pipe<WithOptionsAndStream>>formattedPipe);
     return <CallablePipe>formattedPipe;
@@ -146,7 +160,7 @@ export const getFormattedPipe = (
 
 export const getFormattedPipes = (options: Options, stream: Stream) => {
     if (options.pipes) {
-        const pipes = $$.toArr(options.pipes);
+        const pipes = toArr(options.pipes);
         options = {
             ...options,
             pipes: <CallablePipe[]>(
@@ -163,8 +177,8 @@ export const getFormattedOptions = (
     options: GenericOptions,
     stream: Stream
 ) => {
-    if ($$.isFunc(options)) options = (<OptionsResolver>options)(stream);
-    if (!$$.isObj(options))
+    if (isFunc(options)) options = (<OptionsResolver>options)(stream);
+    if (!isObj(options))
         options = { pipes: <OptionsPipe | OptionsPipe[]>options };
     options = getMergedPipes(<Options>options);
     options = getFormattedPipes(<Options>options, stream);
@@ -176,18 +190,18 @@ export const getFormattedStream = (
     stream: GenericStream,
     defaultStore: PipeStore
 ) => {
-    if ($$.isFunc(stream)) stream = (<StreamResolver>stream)(options);
-    if (!$$.hasKey(stream, "store"))
+    if (isFunc(stream)) stream = (<StreamResolver>stream)(options);
+    if (!hasKey(stream, "store"))
         (<Stream>stream).store = { ...defaultStore, ...(options?.store ?? {}) };
     return stream;
 };
 
 export const getMergedPipes = (options: Options) => {
     if (options.pipe) {
-        const pipe = $$.toArr(options.pipe);
-        const pipes = $$.toArr(options.pipes);
+        const pipe = toArr(options.pipe);
+        const pipes = toArr(options.pipes);
         options = {
-            ...$$.omit(options, "pipe"),
+            ...omit(options, "pipe"),
             pipes: [...pipe, ...pipes].filter(Boolean),
         };
     }
@@ -201,7 +215,7 @@ export const getOptionCases = (options: Options) => {
         return result;
     }
     if (!options?.case1) return result;
-    $$.getSortedKeys(options).forEach((key) => {
+    getSortedKeys(options).forEach((key) => {
         if (/case\d+/.test(key)) result.push(options[key]);
     });
     return result;
@@ -212,17 +226,17 @@ export const getOptionExp = async (
     stream: Stream
 ): Promise<PipeResult | any> => {
     const exp = options.exp ?? options.expression;
-    return $$.isFunc(exp) ? await getSubResult(options, stream) : exp;
+    return isFunc(exp) ? await getSubResult(options, stream) : exp;
 };
 
 export const getStatus = (result: PipeResult) =>
-    $$.hasKeyBool(result, "status") ? result.status : !!result.status;
+    hasKeyBool(result, "status") ? result.status : !!result.status;
 
 export const getStorePipe = (
     pipe: GenericPipe | string,
     stream: Stream
 ): GenericPipe | string =>
-    $$.isStr(pipe) ? stream?.store?.[<string>pipe] ?? pipe : pipe;
+    isStr(pipe) ? stream?.store?.[<string>pipe] ?? pipe : pipe;
 
 export const getSubResult = async (
     options: Options,
@@ -232,8 +246,8 @@ export const getSubResult = async (
 ) => {
     const result = defaultVal;
     if (
-        !$$.hasKey(options, "pipes") ||
-        !$$.isFuncArr(options.pipes!) ||
+        !hasKey(options, "pipes") ||
+        !isFuncArr(options.pipes!) ||
         options.pipes!.length < index + 1
     )
         return result;
@@ -247,7 +261,7 @@ export const getSubResult = async (
 };
 
 export const hasResponse = (result: PipeResult): boolean => {
-    const hasResponse = $$.hasKey(result, "response");
-    const isNotEmpty = !$$.isEmpty(result.response);
+    const hasResponse = hasKey(result, "response");
+    const isNotEmpty = !isEmpty(result.response);
     return hasResponse && isNotEmpty;
 };
