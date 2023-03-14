@@ -1,4 +1,11 @@
-import { getKeyArr, getKeyBool, hasKey, hasKeyFunc, omit } from "richierich";
+import {
+    getFunc,
+    getKeyArr,
+    getKeyBool,
+    hasKey,
+    hasKeyFunc,
+    omit,
+} from "richierich";
 
 import {
     addOptionResponse,
@@ -172,6 +179,18 @@ export const then: Pipe<WithOptionsAndStream> = async (...args) => {
         if (!result.status) break;
         result = await getSubResult(options, stream, i);
     }
+    return result;
+};
+
+export const setDefaultOptions: Pipe<WithOptionsAndStream> = async (
+    ...args
+) => {
+    const { options } = getFormattedArgs(args);
+    let result: PipeResult = {};
+    Object.keys(options).forEach((key) => {
+        defaultOptions[key] = getFunc(options[key], defaultOptions);
+    });
+    result.status = true;
     return result;
 };
 
