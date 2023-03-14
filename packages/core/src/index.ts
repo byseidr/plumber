@@ -9,7 +9,13 @@ import {
     getOptionCases,
     getSubResult,
 } from "./helpers";
-import { DynamicPipe, Pipe, PipeResult, WithOptionsAndStream } from "./types";
+import {
+    DynamicPipe,
+    Options,
+    Pipe,
+    PipeResult,
+    WithOptionsAndStream,
+} from "./types";
 
 export const and: Pipe<WithOptionsAndStream> = async (...args) => {
     const { options, stream } = getFormattedArgs(args, exports);
@@ -167,4 +173,8 @@ export const then: Pipe<WithOptionsAndStream> = async (...args) => {
         result = await getSubResult(options, stream, i);
     }
     return result;
+};
+
+export const defaultOptions: Options = {
+    pipeStore: { ...omit(exports, "defaultOptions") },
 };
