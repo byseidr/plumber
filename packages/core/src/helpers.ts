@@ -47,11 +47,11 @@ export const addDefaultOptions = (options: Options) => {
     });
 };
 
-export const addFormattedPipes = (options: Options, stream: Stream) => {
+export const addFormattedPipes = (options: Options) => {
     if (!options.pipes) return;
     const pipes = toArr(options.pipes);
     options.pipes = <CallablePipe[]>(
-        pipes.map((pipe) => getFormattedPipe(pipe, stream)).filter(Boolean)
+        pipes.map((pipe) => getFormattedPipe(pipe, options)).filter(Boolean)
     );
 };
 
@@ -115,9 +115,9 @@ export const filterSubResult = (
 
 export const getBoundPipe = (
     pipeTuple: PipeToBeBound,
-    stream: Stream
+    options: Options
 ): CallablePipe | string => {
-    const pipe = <BindablePipe | string>getStorePipe(pipeTuple[0], stream);
+    const pipe = <BindablePipe | string>getStorePipe(pipeTuple[0], options);
     if (isFunc(pipe) && pipeTuple?.[1])
         return getCallablePipe(<BindablePipe>pipe, pipeTuple[1]);
     return <string>pipe;
@@ -158,21 +158,20 @@ export const getExpOrStatus = async (
     return [status, nextPipe];
 };
 
-export const getFormattedArgs = (args: PipeArgs, defaultStore: PipeStore) => {
+export const getFormattedArgs = (args: PipeArgs) => {
     let options = <GenericOptions>(args.length > 1 ? args[0] : {});
     let stream = <Stream>(args.length > 1 ? args[1] : args[0]);
     options = getFormattedOptions(options, stream);
-    stream = getFormattedStream(options, stream, defaultStore);
     return { options, stream };
 };
 
 export const getFormattedPipe = (
     pipe: OptionsPipe,
-    stream: Stream
+    options: Options
 ): CallablePipe | undefined => {
     const formattedPipe = isArr(pipe)
-        ? getBoundPipe(<PipeToBeBound>pipe, stream)
-        : getStorePipe(<CallablePipe | string>pipe, stream);
+        ? getBoundPipe(<PipeToBeBound>pipe, options)
+        : getStorePipe(<CallablePipe | string>pipe, options);
     if (isStr(formattedPipe)) return;
     if (formattedPipe.length > 1)
         return getCallablePipe(<Pipe<WithOptionsAndStream>>formattedPipe);
@@ -187,20 +186,9 @@ export const getFormattedOptions = (
     if (!isObj(options))
         options = { pipes: <OptionsPipe | OptionsPipe[]>options };
     mergeOptionAliases(<Options>options);
-    addFormattedPipes(<Options>options, stream);
+    addFormattedPipes(<Options>options);
     addDefaultOptions(<Options>options);
     return <Options>options;
-};
-
-export const getFormattedStream = (
-    options: Options,
-    stream: GenericStream,
-    defaultStore: PipeStore
-) => {
-    if (isFunc(stream)) stream = (<StreamResolver>stream)(options);
-    if (!hasKey(stream, "store"))
-        (<Stream>stream).store = { ...defaultStore, ...(options?.store ?? {}) };
-    return stream;
 };
 
 export const getOptionCases = (options: Options) => {
@@ -229,9 +217,9 @@ export const getStatus = (result: PipeResult) =>
 
 export const getStorePipe = (
     pipe: GenericPipe | string,
-    stream: Stream
+    options: Options
 ): GenericPipe | string =>
-    isStr(pipe) ? stream?.store?.[<string>pipe] ?? pipe : pipe;
+    isStr(pipe) ? options?.pipeStore?.[<string>pipe] ?? pipe : pipe;
 
 export const getSubResult = async (
     options: Options,

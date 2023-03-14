@@ -18,7 +18,7 @@ import {
 } from "./types";
 
 export const and: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     options.initialStatus = true;
     options.reducer = (acc: boolean, curr: boolean) => acc && curr;
     options.responseFilter = (result: PipeResult, subResult: PipeResult) =>
@@ -28,7 +28,7 @@ export const and: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const append: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     let result = await getSubResult(options, stream);
     let appendResult = omit(options, "pipes");
     result = { ...result, ...appendResult };
@@ -36,7 +36,7 @@ export const append: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const compare: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     const result: PipeResult = {};
     result.status = getKeyBool(options, "initialStatus");
     result.response = [];
@@ -48,7 +48,7 @@ export const compare: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const ifElse: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     const [condition, nextPipe]: [boolean, number] = await getExpOrStatus(
         options,
         stream
@@ -60,14 +60,14 @@ export const ifElse: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const not: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     const result = await getSubResult(options, stream);
     result.status = !result.status;
     return result;
 };
 
 export const or: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     options.initialStatus = false;
     options.reducer = (acc: boolean, curr: boolean) => acc || curr;
     options.responseFilter = (result: PipeResult, subResult: PipeResult) =>
@@ -77,7 +77,7 @@ export const or: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const returnFalse: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = false;
     addOptionResponse(options, result);
@@ -85,7 +85,7 @@ export const returnFalse: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const returnTrue: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = true;
     addOptionResponse(options, result);
@@ -93,7 +93,7 @@ export const returnTrue: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const switchBlock: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     const exp = await getExpOrResponse(options, stream);
     const cases = getOptionCases(options);
     const result: PipeResult = await then(
@@ -112,7 +112,7 @@ export const switchBlock: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const switchBreak: DynamicPipe = async (...args) => {
-    const { stream } = getFormattedArgs(args, exports);
+    const { stream } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = true;
     if (hasKey(stream, "switchExp")) stream.switchExp = undefined;
@@ -121,7 +121,7 @@ export const switchBreak: DynamicPipe = async (...args) => {
 };
 
 export const switchCase: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = true;
     if (stream.switchExp === options.value || stream.switchMatched) {
@@ -132,7 +132,7 @@ export const switchCase: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const switchCaseBreak: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = true;
     if (stream.switchExp === options.value || stream.switchMatched) {
@@ -144,7 +144,7 @@ export const switchCaseBreak: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const switchDefault: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = true;
     if (hasKey(stream, "switchExp") && stream.switchMatched === false) {
@@ -155,7 +155,7 @@ export const switchDefault: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const switchExp: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     let result: PipeResult = {};
     const [exp] = await getExpOrResponse(options, stream);
     if (exp) stream.switchExp = exp;
@@ -165,7 +165,7 @@ export const switchExp: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const then: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args, exports);
+    const { options, stream } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = true;
     for (let i = 0; i < getKeyArr(options, "pipes").length; i++) {
