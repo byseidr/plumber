@@ -34,6 +34,14 @@ import {
     CallablePipe,
 } from "./types";
 
+export const addFormattedPipes = (options: Options, stream: Stream) => {
+    if (!options.pipes) return;
+    const pipes = toArr(options.pipes);
+    options.pipes = <CallablePipe[]>(
+        pipes.map((pipe) => getFormattedPipe(pipe, stream)).filter(Boolean)
+    );
+};
+
 export const addOptionResponse = (options: Options, result: PipeResult) => {
     if (!hasKey(options, "response") || isEmpty(options.response)) return;
     result.response = getFunc(options.response, result.status);
@@ -158,21 +166,6 @@ export const getFormattedPipe = (
     return <CallablePipe>formattedPipe;
 };
 
-export const getFormattedPipes = (options: Options, stream: Stream) => {
-    if (options.pipes) {
-        const pipes = toArr(options.pipes);
-        options = {
-            ...options,
-            pipes: <CallablePipe[]>(
-                pipes
-                    .map((pipe) => getFormattedPipe(pipe, stream))
-                    .filter(Boolean)
-            ),
-        };
-    }
-    return options;
-};
-
 export const getFormattedOptions = (
     options: GenericOptions,
     stream: Stream
@@ -181,8 +174,8 @@ export const getFormattedOptions = (
     if (!isObj(options))
         options = { pipes: <OptionsPipe | OptionsPipe[]>options };
     options = getMergedPipes(<Options>options);
-    options = getFormattedPipes(<Options>options, stream);
-    return options;
+    addFormattedPipes(<Options>options, stream);
+    return <Options>options;
 };
 
 export const getFormattedStream = (
