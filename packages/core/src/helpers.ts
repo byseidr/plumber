@@ -14,6 +14,7 @@ import {
     toArr,
 } from "richierich";
 
+import { defaultOptions } from ".";
 import {
     Pipe,
     PipeArgs,
@@ -33,6 +34,17 @@ import {
     BindablePipe,
     CallablePipe,
 } from "./types";
+
+export const addDefaultOptions = (options: Options) => {
+    if (hasKey(options, "pipeStore"))
+        options.pipeStore = {
+            ...defaultOptions.pipeStore,
+            ...options.pipeStore,
+        };
+    Object.keys(defaultOptions).forEach((key) => {
+        if (!hasKey(options, key)) options[key] = defaultOptions[key];
+    });
+};
 
 export const addFormattedPipes = (options: Options, stream: Stream) => {
     if (!options.pipes) return;
@@ -175,6 +187,7 @@ export const getFormattedOptions = (
         options = { pipes: <OptionsPipe | OptionsPipe[]>options };
     options = getMergedPipes(<Options>options);
     addFormattedPipes(<Options>options, stream);
+    addDefaultOptions(<Options>options);
     return <Options>options;
 };
 
