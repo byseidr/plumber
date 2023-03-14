@@ -12,20 +12,20 @@ import {
     addSubResults,
     getExpOrResponse,
     getExpOrStatus,
-    getFormattedArgs,
+    getFormattedOptions,
     getOptionCases,
     getSubResult,
 } from "./helpers";
 import {
-    DynamicPipe,
     Options,
     Pipe,
     PipeResult,
     WithOptionsAndStream,
+    WithStream,
 } from "./types";
 
-export const and: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const and: Pipe<WithOptionsAndStream> = async (options, stream = {}) => {
+    options = getFormattedOptions(options, stream);
     options.initialStatus = true;
     options.reducer = (acc: boolean, curr: boolean) => acc && curr;
     options.responseFilter = (result: PipeResult, subResult: PipeResult) =>
@@ -34,16 +34,22 @@ export const and: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const append: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const append: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     let result = await getSubResult(options, stream);
     let appendResult = omit(options, "pipes");
     result = { ...result, ...appendResult };
     return result;
 };
 
-export const compare: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const compare: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     const result: PipeResult = {};
     result.status = getKeyBool(options, "initialStatus");
     result.response = [];
@@ -54,8 +60,11 @@ export const compare: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const ifElse: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const ifElse: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     const [condition, nextPipe]: [boolean, number] = await getExpOrStatus(
         options,
         stream
@@ -66,15 +75,15 @@ export const ifElse: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const not: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const not: Pipe<WithOptionsAndStream> = async (options, stream = {}) => {
+    options = getFormattedOptions(options, stream);
     const result = await getSubResult(options, stream);
     result.status = !result.status;
     return result;
 };
 
-export const or: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const or: Pipe<WithOptionsAndStream> = async (options, stream = {}) => {
+    options = getFormattedOptions(options, stream);
     options.initialStatus = false;
     options.reducer = (acc: boolean, curr: boolean) => acc || curr;
     options.responseFilter = (result: PipeResult, subResult: PipeResult) =>
@@ -83,24 +92,33 @@ export const or: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const returnFalse: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const returnFalse: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     let result: PipeResult = {};
     result.status = false;
     addOptionResponse(options, result);
     return result;
 };
 
-export const returnTrue: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const returnTrue: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     let result: PipeResult = {};
     result.status = true;
     addOptionResponse(options, result);
     return result;
 };
 
-export const switchBlock: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const switchBlock: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     const exp = await getExpOrResponse(options, stream);
     const cases = getOptionCases(options);
     const result: PipeResult = await then(
@@ -118,8 +136,7 @@ export const switchBlock: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const switchBreak: DynamicPipe = async (...args) => {
-    const { stream } = getFormattedArgs(args);
+export const switchBreak: Pipe<WithStream> = async (stream = {}) => {
     let result: PipeResult = {};
     result.status = true;
     if (hasKey(stream, "switchExp")) stream.switchExp = undefined;
@@ -127,8 +144,11 @@ export const switchBreak: DynamicPipe = async (...args) => {
     return result;
 };
 
-export const switchCase: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const switchCase: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     let result: PipeResult = {};
     result.status = true;
     if (stream.switchExp === options.value || stream.switchMatched) {
@@ -138,8 +158,11 @@ export const switchCase: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const switchCaseBreak: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const switchCaseBreak: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     let result: PipeResult = {};
     result.status = true;
     if (stream.switchExp === options.value || stream.switchMatched) {
@@ -150,8 +173,11 @@ export const switchCaseBreak: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const switchDefault: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const switchDefault: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     let result: PipeResult = {};
     result.status = true;
     if (hasKey(stream, "switchExp") && stream.switchMatched === false) {
@@ -161,8 +187,11 @@ export const switchDefault: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const switchExp: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const switchExp: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     let result: PipeResult = {};
     const [exp] = await getExpOrResponse(options, stream);
     if (exp) stream.switchExp = exp;
@@ -171,8 +200,11 @@ export const switchExp: Pipe<WithOptionsAndStream> = async (...args) => {
     return result;
 };
 
-export const then: Pipe<WithOptionsAndStream> = async (...args) => {
-    const { options, stream } = getFormattedArgs(args);
+export const then: Pipe<WithOptionsAndStream> = async (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
     let result: PipeResult = {};
     result.status = true;
     for (let i = 0; i < getKeyArr(options, "pipes").length; i++) {
@@ -183,12 +215,13 @@ export const then: Pipe<WithOptionsAndStream> = async (...args) => {
 };
 
 export const setDefaultOptions: Pipe<WithOptionsAndStream> = async (
-    ...args
+    options,
+    stream = {}
 ) => {
-    const { options } = getFormattedArgs(args);
+    options = getFormattedOptions(options, stream);
     let result: PipeResult = {};
     Object.keys(options).forEach((key) => {
-        defaultOptions[key] = getFunc(options[key], defaultOptions);
+        defaultOptions[key] = getFunc((<Options>options)[key], defaultOptions);
     });
     result.status = true;
     return result;
