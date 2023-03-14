@@ -10,7 +10,8 @@ import {
     isFuncArr,
     isObj,
     isStr,
-    omit,
+    mergeKeyArr,
+    mergeKeyObj,
     toArr,
 } from "richierich";
 
@@ -185,7 +186,7 @@ export const getFormattedOptions = (
     if (isFunc(options)) options = (<OptionsResolver>options)(stream);
     if (!isObj(options))
         options = { pipes: <OptionsPipe | OptionsPipe[]>options };
-    options = getMergedPipes(<Options>options);
+    mergeOptionAliases(<Options>options);
     addFormattedPipes(<Options>options, stream);
     addDefaultOptions(<Options>options);
     return <Options>options;
@@ -200,18 +201,6 @@ export const getFormattedStream = (
     if (!hasKey(stream, "store"))
         (<Stream>stream).store = { ...defaultStore, ...(options?.store ?? {}) };
     return stream;
-};
-
-export const getMergedPipes = (options: Options) => {
-    if (options.pipe) {
-        const pipe = toArr(options.pipe);
-        const pipes = toArr(options.pipes);
-        options = {
-            ...omit(options, "pipe"),
-            pipes: [...pipe, ...pipes].filter(Boolean),
-        };
-    }
-    return options;
 };
 
 export const getOptionCases = (options: Options) => {
@@ -264,6 +253,11 @@ export const getSubResult = async (
     if (options.disableResultPropagation) return result;
     addStreamResult(stream, result);
     return result;
+};
+
+export const mergeOptionAliases = (options: Options) => {
+    mergeKeyArr(<Options>options, "pipes", "pipe");
+    mergeKeyObj(<Options>options, "pipeStore", ["store", "Store", "pipestore"]);
 };
 
 export const hasResponse = (result: PipeResult): boolean => {
