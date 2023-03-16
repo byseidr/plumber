@@ -9,75 +9,35 @@ import {
     WithOptionsAndStream,
 } from "@plumber/core/dist/types";
 
-import { formatDateTime } from "./helpers";
+import { addData, formatDateTime } from "./helpers";
 
 export const setArr: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
-    const result: PipeResult = {};
-    const { name, optional, value } = options;
-    if (name && isArr(value) && value.length) {
-        (stream.data ??= {})[name] = value;
-        result.status = true;
-    } else {
-        result.status = !!optional || false;
-    }
-    addOptionResponse(options, result);
+    const result = addData(options, stream, isArr);
     return result;
 };
 
 export const setBool: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
-    const result: PipeResult = {};
-    const { name, optional, value } = options;
-    if (name && isBool(value)) {
-        (stream.data ??= {})[name] = value;
-        result.status = true;
-    } else {
-        result.status = !!optional || false;
-    }
-    addOptionResponse(options, result);
+    const result = addData(options, stream, isBool);
     return result;
 };
 
 export const setNum: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
-    const result: PipeResult = {};
-    const { name, optional, value } = options;
-    if (name && isNum(value)) {
-        (stream.data ??= {})[name] = value;
-        result.status = true;
-    } else {
-        result.status = !!optional || false;
-    }
-    addOptionResponse(options, result);
+    const result = addData(options, stream, isNum);
     return result;
 };
 
 export const setObj: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
-    const result: PipeResult = {};
-    const { name, optional, value } = options;
-    if (name && isObj(value)) {
-        (stream.data ??= {})[name] = value;
-        result.status = true;
-    } else {
-        result.status = !!optional || false;
-    }
-    addOptionResponse(options, result);
+    const result = addData(options, stream, isObj);
     return result;
 };
 
 export const setStr: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
-    const result: PipeResult = {};
-    const { name, optional, value } = options;
-    if (name && isStr(value) && value) {
-        (stream.data ??= {})[name] = value;
-        result.status = true;
-    } else {
-        result.status = !!optional || false;
-    }
-    addOptionResponse(options, result);
+    const result = addData(options, stream, isStr);
     return result;
 };
 

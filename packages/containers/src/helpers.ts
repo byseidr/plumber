@@ -5,6 +5,25 @@ import {
     DateTimeJSOptions,
     DateTimeOptions,
 } from "luxon";
+import { Options, PipeResult, Stream } from "@plumber/core/dist/types";
+import { addOptionResponse } from "@plumber/core/dist/helpers";
+
+export const addData = (
+    options: Options,
+    stream: Stream,
+    validator?: (el: any) => boolean
+): PipeResult => {
+    const result: PipeResult = {};
+    const { name, optional, value } = options;
+    if (name && value && (validator?.(value) ?? true)) {
+        (stream.data ??= {})[name] = value;
+        result.status = true;
+    } else {
+        result.status = !!optional || false;
+    }
+    addOptionResponse(options, result);
+    return result;
+};
 
 export const formatDateTime = (
     dateTime: string | DateObjectUnits,
