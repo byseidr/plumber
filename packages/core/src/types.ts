@@ -28,7 +28,7 @@ export interface Pipe<T extends PipeArgs> {
 
 export interface StreamBase {
     data?: { [key: string]: any };
-    response?: any;
+    response?: Response;
     status?: Status;
     store?: PipeStore;
     switchExp?: OptionsBase["exp"];
