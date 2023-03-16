@@ -76,6 +76,12 @@ export type PipeSubResultFilter = (
 
 export type PipeToBeBound = [BindablePipe | string, Options];
 
+export type Response = any;
+
+export type ResponseResolver = (status: Status) => Response;
+
+export type Status = boolean;
+
 export type Stream = { [K in keyof StreamBase]?: StreamBase[K] } & {
     [key: string]: any;
 };
