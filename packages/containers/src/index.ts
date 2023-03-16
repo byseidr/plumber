@@ -44,7 +44,7 @@ export const setStr: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
 export const setTime: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
     const result: PipeResult = {};
-    let { name, value, zone, locale } = options;
+    let { name, optional, value, zone, locale } = options;
     if (name) {
         (stream.data ??= {})[name] =
             isStr(value) || isObj(value)
@@ -52,7 +52,7 @@ export const setTime: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
                 : nowInS();
         result.status = true;
     } else {
-        result.status = false;
+        result.status = !!optional || false;
     }
     addOptionResponse(options, result);
     return result;
