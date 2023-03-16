@@ -1,4 +1,4 @@
-import { Index } from "richierich/dist/types";
+import { Index, Indexable } from "richierich/dist/types";
 
 export interface OptionsBase {
     [key: `case${number}`]: [any, CallablePipe];
@@ -31,7 +31,7 @@ export interface Pipe<T extends PipeArgs> {
 }
 
 export interface StreamBase {
-    data?: { [key: string]: any };
+    data?: Indexable;
     response?: Response;
     status?: Status;
     store?: PipeStore;
@@ -56,9 +56,7 @@ export type GenericPipe =
     | Pipe<WithStream>
     | Pipe<WithOptionsAndStream>;
 
-export type Options = { [K in keyof OptionsBase]?: OptionsBase[K] } & {
-    [key: string]: any;
-};
+export type Options = { [K in keyof OptionsBase]?: OptionsBase[K] } & Indexable;
 
 export type OptionsPipe = CallablePipe | PipeToBeBound | string;
 
@@ -71,7 +69,7 @@ export type PipeResult = {
     response?: any;
 };
 
-export type PipeStore = { [key: string]: GenericPipe };
+export type PipeStore = { [key: Index]: GenericPipe };
 
 export type PipeSubResultFilter = (
     result: PipeResult,
@@ -86,9 +84,7 @@ export type ResponseResolver = (status: Status) => Response;
 
 export type Status = boolean;
 
-export type Stream = { [K in keyof StreamBase]?: StreamBase[K] } & {
-    [key: string]: any;
-};
+export type Stream = { [K in keyof StreamBase]?: StreamBase[K] } & Indexable;
 
 export type WithOptionsAndStream = [GenericOptions, Stream?];
 
