@@ -17,15 +17,6 @@ export interface OptionsBase {
     zone?: string;
 }
 
-export interface StreamBase {
-    data?: { [key: string]: any };
-    response?: any;
-    status?: boolean;
-    store?: PipeStore;
-    switchExp?: OptionsBase["exp"];
-    switchMatched?: boolean;
-}
-
 export interface Pipe<T extends PipeArgs> {
     (...args: T): PipeResult | Promise<PipeResult>;
     bind: (
@@ -35,27 +26,20 @@ export interface Pipe<T extends PipeArgs> {
     ) => Pipe<WithStream>;
 }
 
+export interface StreamBase {
+    data?: { [key: string]: any };
+    response?: any;
+    status?: boolean;
+    store?: PipeStore;
+    switchExp?: OptionsBase["exp"];
+    switchMatched?: boolean;
+}
+
 export type BindablePipe = DynamicPipe | Pipe<WithOptionsAndStream>;
 
 export type CallablePipe = DynamicPipe | Pipe<WithStream>;
 
 export type DynamicPipe = Pipe<PipeArgs>;
-
-export type PipeArgs = WithStream | WithOptionsAndStream;
-
-export type PipeResult = {
-    status?: boolean;
-    response?: any;
-};
-
-export type PipeStore = { [key: string]: GenericPipe };
-
-export type PipeSubResultFilter = (
-    result: PipeResult,
-    subResult: PipeResult
-) => boolean;
-
-export type PipeToBeBound = [BindablePipe | string, Options];
 
 export type GenericOptions =
     | Options
@@ -76,10 +60,26 @@ export type OptionsPipe = CallablePipe | PipeToBeBound | string;
 
 export type OptionsResolver = (stream: Stream) => Options | OptionsPipe;
 
+export type PipeArgs = WithStream | WithOptionsAndStream;
+
+export type PipeResult = {
+    status?: boolean;
+    response?: any;
+};
+
+export type PipeStore = { [key: string]: GenericPipe };
+
+export type PipeSubResultFilter = (
+    result: PipeResult,
+    subResult: PipeResult
+) => boolean;
+
+export type PipeToBeBound = [BindablePipe | string, Options];
+
 export type Stream = { [K in keyof StreamBase]?: StreamBase[K] } & {
     [key: string]: any;
 };
 
-export type WithStream = [Stream?];
-
 export type WithOptionsAndStream = [GenericOptions, Stream?];
+
+export type WithStream = [Stream?];
