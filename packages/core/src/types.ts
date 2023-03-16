@@ -68,8 +68,6 @@ export type GenericPipe =
     | Pipe<WithStream>
     | Pipe<WithOptionsAndStream>;
 
-export type GenericStream = Stream | StreamResolver;
-
 export type Options = { [K in keyof OptionsBase]?: OptionsBase[K] } & {
     [key: string]: any;
 };
@@ -81,8 +79,6 @@ export type OptionsResolver = (stream: Stream) => Options | OptionsPipe;
 export type Stream = { [K in keyof StreamBase]?: StreamBase[K] } & {
     [key: string]: any;
 };
-
-export type StreamResolver = (options: Options) => Stream;
 
 export type WithStream = [Stream?];
 
