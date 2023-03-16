@@ -12,7 +12,7 @@ export interface OptionsBase {
     reducer?: (acc: any, curr: any) => any;
     response?: any;
     responseFilter?: (result: PipeResult, subResult: PipeResult) => boolean;
-    store?: PipeStore;
+    pipeStore?: PipeStore;
     value?: any;
     zone?: string;
 }
