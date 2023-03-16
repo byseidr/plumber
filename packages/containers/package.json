@@ -1,6 +1,6 @@
 {
     "name": "@plumber/containers",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "description": "Logic container functions for your JavaScript data.",
     "author": "Seidr <seidr@byseidr.com>",
     "homepage": "",
@@ -29,7 +29,7 @@
         "test": "node ./__tests__/containers.test.js"
     },
     "dependencies": {
-        "@plumber/core": "^3.0.0",
+        "@plumber/core": "^3.1.0",
         "luxon": "^3.3.0"
     },
     "devDependencies": {
