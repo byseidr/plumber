@@ -14,7 +14,7 @@ export interface OptionsBase {
     pipe?: OptionsPipe | OptionsPipe[];
     pipes?: this["pipe"];
     reducer?: (acc: any, curr: any) => any;
-    response?: Response | ResponseResolver;
+    response?: Response | Response[] | ResponseResolver;
     responseFilter?: (result: PipeResult, subResult: PipeResult) => boolean;
     pipeStore?: PipeStore;
     value?: any;
