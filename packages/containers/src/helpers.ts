@@ -36,7 +36,7 @@ export const formatDateTime = (
               options
           )
         : DateTime.fromObject(<DateObjectUnits>dateTime, options);
-    return formattedDateTime.toUnixInteger();
+    return formattedDateTime.isValid ? formattedDateTime.toUnixInteger() : null;
 };
 
 export const parseDate = (date: string = "") => {

@@ -68,7 +68,7 @@ export const setTime: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
             isStr(value) || isObj(value)
                 ? formatDateTime(value, { zone, locale })
                 : nowInS();
-        result.status = true;
+        result.status = !!stream?.data?.[name];
     } else {
         result.status = !!optional || false;
     }
