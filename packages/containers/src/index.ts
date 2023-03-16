@@ -3,6 +3,7 @@ import {
     getFormattedOptions,
 } from "@plumber/core/dist/helpers";
 import { isArr, isBool, isNum, isObj, isStr, nowInS } from "richierich";
+import { Duration } from "luxon";
 import {
     Pipe,
     PipeResult,
@@ -20,6 +21,23 @@ export const setArr: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
 export const setBool: Pipe<WithOptionsAndStream> = (options, stream = {}) => {
     options = getFormattedOptions(options, stream);
     const result = addData(options, stream, isBool);
+    return result;
+};
+
+export const setDuration: Pipe<WithOptionsAndStream> = (
+    options,
+    stream = {}
+) => {
+    options = getFormattedOptions(options, stream);
+    const result: PipeResult = {};
+    let { name, optional, value } = options;
+    if (name && isObj(value)) {
+        (stream.data ??= {})[name] = Duration.fromObject(value).toFormat("s");
+        result.status = true;
+    } else {
+        result.status = !!optional || false;
+    }
+    addOptionResponse(options, result);
     return result;
 };
 
