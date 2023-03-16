@@ -1,3 +1,5 @@
+import { Index } from "richierich/dist/types";
+
 export interface OptionsBase {
     [key: `case${number}`]: [any, CallablePipe];
     cases?: [any, CallablePipe][];
@@ -7,6 +9,8 @@ export interface OptionsBase {
     expression?: this["exp"];
     initialStatus?: Status;
     locale?: string;
+    name?: Index;
+    optional?: boolean;
     pipe?: OptionsPipe | OptionsPipe[];
     pipes?: this["pipe"];
     reducer?: (acc: any, curr: any) => any;
