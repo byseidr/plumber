@@ -78,7 +78,7 @@ export type PipeSubResultFilter = (
 
 export type PipeToBeBound = [BindablePipe | string, Options];
 
-export type Response = any;
+export type Response = string | number | Indexable;
 
 export type ResponseResolver = (status: Status) => Response;
 
