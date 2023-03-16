@@ -5,7 +5,7 @@ export interface OptionsBase {
     disableResultPropagation?: boolean;
     exp?: any;
     expression?: this["exp"];
-    initialStatus?: boolean;
+    initialStatus?: Status;
     locale?: string;
     pipe?: OptionsPipe | OptionsPipe[];
     pipes?: this["pipe"];
@@ -29,7 +29,7 @@ export interface Pipe<T extends PipeArgs> {
 export interface StreamBase {
     data?: { [key: string]: any };
     response?: any;
-    status?: boolean;
+    status?: Status;
     store?: PipeStore;
     switchExp?: OptionsBase["exp"];
     switchMatched?: boolean;
