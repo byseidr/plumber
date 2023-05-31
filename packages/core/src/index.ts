@@ -12,11 +12,13 @@ import {
     addSubResults,
     getExpOrResponse,
     getExpOrStatus,
+    getFormattedArgs,
     getFormattedOptions,
     getOptionCases,
     getSubResult,
 } from "./helpers";
 import {
+    DynamicPipe,
     Options,
     Pipe,
     PipeResult,
@@ -92,22 +94,16 @@ export const or: Pipe<WithOptionsAndStream> = async (options, stream = {}) => {
     return result;
 };
 
-export const returnFalse: Pipe<WithOptionsAndStream> = async (
-    options,
-    stream = {}
-) => {
-    options = getFormattedOptions(options, stream);
+export const returnFalse: DynamicPipe = async (...args) => {
+    const { options } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = false;
     addOptionResponse(options, result);
     return result;
 };
 
-export const returnTrue: Pipe<WithOptionsAndStream> = async (
-    options,
-    stream = {}
-) => {
-    options = getFormattedOptions(options, stream);
+export const returnTrue: DynamicPipe = async (...args) => {
+    const { options } = getFormattedArgs(args);
     let result: PipeResult = {};
     result.status = true;
     addOptionResponse(options, result);
