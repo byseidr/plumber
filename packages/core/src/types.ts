@@ -10,6 +10,7 @@ export interface OptionsBase {
     initialStatus?: Status;
     locale?: string;
     name?: Index;
+    names?: Index[];
     optional?: boolean;
     pipe?: OptionsPipe | OptionsPipe[];
     pipes?: this["pipe"];
