@@ -3,7 +3,7 @@ import { Index, Indexable } from "richierich/dist/types";
 export interface OptionsBase {
     [key: `case${number}`]: [any, CallablePipe];
     cases?: [any, CallablePipe][];
-    default?: CallablePipe;
+    default?: CallablePipe | this["value"];
     disableResultPropagation?: boolean;
     exp?: any;
     expression?: this["exp"];
